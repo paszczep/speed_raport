@@ -2,7 +2,6 @@ import pandas as pd
 from zlecenia import run_get_zlecenia
 from faktury import get_pozycje_by_zlecenia_id, get_faktury_by_zlecenia_id
 
-# bardzo niedobrze ID_ZLECENIA = 7938
 
 
 def _index(series):
