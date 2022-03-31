@@ -27,17 +27,22 @@ przych_ids.columns = przych_ids.columns.values + '_PRZYCH'
 zlec_df['INDEX_PRZYCH'] = zlec_df['FAKTURA'] + ' ' + zlec_df['ID_ZLECENIA'].astype(str)
 zlec_df = pd.merge(zlec_df, przych_ids, how='left', on='INDEX_PRZYCH')
 
-noty_cols = ['ZLECENIE_ID', 'ID_FAKTURY', 'NOTA', 'NOTA_UZNANIOWA']
+noty_cols = ['ZLECENIE_ID', 'ID_FAKTURY', 'NOTA_UZNANIOWA']
 noty_ids = faktury_df.loc[faktury_df.NOTA == 1][noty_cols]
+noty_ids.rename(columns={'ID_FAKTURY': 'ID_FAKTURY_NOTA'}, inplace=True)
+zlec_df = pd.merge(zlec_df, noty_ids, how='left', left_on='ID_ZLECENIA', right_on='ZLECENIE_ID')
 
-print(
-    'zlec', zlec_df[['ID_ZLECENIA', 'ID_FAKTURY_KOSZT', 'ID_FAKTURY_PRZYCH']],
-    'koszt', koszt_ids,
-    'przychód', przych_ids,
-    'NOTY', noty_ids,
-    # 'raport', raport_df,
-    sep='\n')
+# print(
+#     'zlec', zlec_df[['ID_ZLECENIA', 'ID_FAKTURY_KOSZT', 'ID_FAKTURY_PRZYCH']],
+#     'koszt', koszt_ids,
+#     'przychód', przych_ids,
+#     'NOTY', noty_ids,
+#     # 'raport', raport_df,
+#     sep='\n')
 
+# print(zlec_df.loc[zlec_df.ID_FAKTURY_PRZYCH != '', ['FAKTURA_ZB_ID', 'ID_FAKTURY_PRZYCH']].sample(10))
+zlec_df.fillna('', inplace=True)
+print(zlec_df.loc[zlec_df.ID_FAKTURY_NOTA != '', ['ZLECENIE_ID', 'ID_FAKTURY_NOTA']])
 # faktury_df.set_index('NUMER_FAKTURY', drop=True, inplace=True)
 # faktury_cols = ['NUMER_FAKTURY', 'ID_FAKTURY']
 
