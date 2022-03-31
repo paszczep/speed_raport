@@ -1,57 +1,58 @@
-from cursor import get_cursor, dataframe_from_query
-from zlecenia import get_zlec_df, zlecenia_query
+import pandas as pd
+from zlecenia import run_get_zlecenia
+from faktury import get_pozycje_by_zlecenia_id, get_faktury_by_zlecenia_id
 
-cursor = get_cursor()
-
-zlec_df = dataframe_from_query(cursor, zlecenia_query)
-zlec_df = get_zlec_df(zlec_df)
-print(zlec_df)
-# status_str = str(set(zlec_df['STATUS'].to_list())).replace('{', '(').replace('}', ')')
-#
-# status_query = f"""
-#   SELECT KOD, OPIS
-#   FROM [SPEED].[dbo].[STATUS]
-#   WHERE KOD IN {status_str}
-#   AND TYP = 'FT'
-# """
-#
-# status_df = dataframe_from_query(cursor, status_query).set_index('KOD')
-# zlec_df = zlec_df.join(status_df, on='STATUS')
+zlec_df = run_get_zlecenia()
 
 relevant_zlec_ids = str(set(zlec_df.ID_ZLECENIA.to_list()))
 relevant_zlec_ids = relevant_zlec_ids.replace('{', '(').replace('}', ')')
 
-faktury_query = f"""
-  SELECT * FROM FAKTURY WHERE ZLECENIE_ID IN {relevant_zlec_ids}"""
+faktury_df = get_faktury_by_zlecenia_id(relevant_zlec_ids)
+pozycje_df = get_pozycje_by_zlecenia_id(relevant_zlec_ids)
 
-all_faktury_df = dataframe_from_query(cursor, faktury_query)
+faktury_cols = ['ID_FAKTURY', 'NUMER_FAKTURY', 'ZLECENIE_ID']
+# index_cols = ['ZLECENIE_ID', 'NUMER_FAKTURY']
 
-numery_faktur_list = [el for el in zlec_df.FAKTURA.to_list() if el not in ['', None]]
-numery_faktur_str = str(set(numery_faktur_list)).replace('{', '(').replace('}', ')')
+koszt_ids = faktury_df.loc[faktury_df.NUMER_FAKTURY.isin(set(zlec_df.FAKTURA_K.to_list()))][faktury_cols]
+koszt_ids['INDEX'] = koszt_ids['NUMER_FAKTURY'] + ' ' + koszt_ids['ZLECENIE_ID'].astype(str)
+koszt_ids.drop(['NUMER_FAKTURY', 'ZLECENIE_ID'], axis=1, inplace=True)
+koszt_ids.columns = koszt_ids.columns.values + '_KOSZT'
+zlec_df['INDEX_KOSZT'] = zlec_df['FAKTURA_K'] + ' ' + zlec_df['ID_ZLECENIA'].astype(str)
+zlec_df = pd.merge(zlec_df, koszt_ids, how='left', on='INDEX_KOSZT')
 
-numery_faktur_query = f"""
-  SELECT * FROM FAKTURY WHERE NUMER_FAKTURY IN {numery_faktur_str}"""
+przych_ids = faktury_df.loc[faktury_df.NUMER_FAKTURY.isin(set(zlec_df.FAKTURA.to_list()))][faktury_cols]
+przych_ids['INDEX'] = przych_ids['NUMER_FAKTURY'] + ' ' + przych_ids['ZLECENIE_ID'].astype(str)
+przych_ids.drop(['NUMER_FAKTURY', 'ZLECENIE_ID'], axis=1, inplace=True)
+przych_ids.columns = przych_ids.columns.values + '_PRZYCH'
+zlec_df['INDEX_PRZYCH'] = zlec_df['FAKTURA'] + ' ' + zlec_df['ID_ZLECENIA'].astype(str)
+zlec_df = pd.merge(zlec_df, przych_ids, how='left', on='INDEX_PRZYCH')
 
-faktury_przych_df = dataframe_from_query(cursor, numery_faktur_query)
+noty_cols = ['ZLECENIE_ID', 'ID_FAKTURY', 'NOTA', 'NOTA_UZNANIOWA']
+noty_ids = faktury_df.loc[faktury_df.NOTA == 1][noty_cols]
 
-faktury_cols = ['NETTO_PLN', 'NUMER_FAKTURY', 'ID_FAKTURY', 'ZLECENIE_ID']
+print(
+    'zlec', zlec_df[['ID_ZLECENIA', 'ID_FAKTURY_KOSZT', 'ID_FAKTURY_PRZYCH']],
+    'koszt', koszt_ids,
+    'przychód', przych_ids,
+    'NOTY', noty_ids,
+    # 'raport', raport_df,
+    sep='\n')
 
-faktury_df = all_faktury_df[faktury_cols].loc[all_faktury_df.NOTA == 0]
+# faktury_df.set_index('NUMER_FAKTURY', drop=True, inplace=True)
+# faktury_cols = ['NUMER_FAKTURY', 'ID_FAKTURY']
 
-missing_faktury = [el for el in faktury_przych_df.NUMER_FAKTURY.to_list() if el not in faktury_df.NUMER_FAKTURY.to_list()]
 
-unique_ids = zlec_df.ID_ZLECENIA.to_list()
+#
+# noty_cols = ['ID_FAKTURY', 'NOTA', 'NOTA_UZNANIOWA']
+# noty_ids = faktury_df.loc[faktury_df.NOTA == 1][noty_cols]
 
-numery_faktur_przych_list = [el for el in zlec_df.FAKTURA.to_list() if el != '']
+# przych_df.set_index('NUMER_FAKTURY', drop=True, inplace=True)
+# raport_df = zlec_df.join(przych_df, on='FAKTURA', how='left', rsuffix='_PRZYCH')
+# raport_df = raport_df.join(faktury_df, on='FAKTURA_K', how='left', rsuffix='_KOSZT')
+#
+# raport_df = pd.merge(zlec_df, faktury_df[['ID_FAKTURY', 'NUMER_FAKTURY']], left_on='FAKTURA', right_on='NUMER_FAKTURY')
+# raport_df = pd.merge(raport_df, faktury_df, left_on='FAKTURA_K', right_on='NUMER_FAKTURY')
 
-przych_faktury_df = all_faktury_df.loc[all_faktury_df.NUMER_FAKTURY.isin(numery_faktur_przych_list)].set_index('NUMER_FAKTURY')
+# raport_df = pd.merge(zlec_df, przych_ids, how='left', left_on='FAKTURA', right_on='NUMER_FAKTURY')
 
-numery_faktur_koszt_list = [el for el in zlec_df['FAKTURA_K'].to_list() if el != '']
 
-koszt_faktury_df = all_faktury_df.loc[all_faktury_df.NUMER_FAKTURY.isin(numery_faktur_koszt_list)].set_index('NUMER_FAKTURY')
-
-saldo_cols = ['KWOTA_K', 'WALUTA_K', 'FAKTURA', 'FAKTURA_ZB_ID', 'FAKTURA_K', 'FAKTURA_K_ZB', 'KWOTA_P', 'WALUTA_P']
-
-zlec_df[saldo_cols].loc[zlec_df['FAKTURA_K'] != ''].join(koszt_faktury_df['NETTO_PLN'], how='left', on='FAKTURA_K')
-
-print(zlec_df)
