@@ -1,8 +1,8 @@
-from connect import get_cursor, dataframe_from_query
+from connect import get_input_cursor, dataframe_from_query
 
 
 def get_noty_by_zlecenia_id(zlecenia_id_list):
-    cursor = get_cursor()
+    cursor = get_input_cursor()
 
     faktury_query = f"""
     SELECT 
@@ -22,7 +22,7 @@ def get_noty_by_zlecenia_id(zlecenia_id_list):
 
 
 def get_faktury_by_zlecenia_id(zlecenia_id_list):
-    cursor = get_cursor()
+    cursor = get_input_cursor()
 
     faktury_query = f"""
     SELECT 
@@ -41,7 +41,7 @@ def get_faktury_by_zlecenia_id(zlecenia_id_list):
 
 def get_pozycje_by_faktury_id(faktury_id_list):
 
-    cursor = get_cursor()
+    cursor = get_input_cursor()
     pozycje_query = f"""
     SELECT [FAKTURY_ID]
           ,[ZLECENIE_ID]
@@ -57,7 +57,7 @@ def get_pozycje_by_faktury_id(faktury_id_list):
 
 def get_pozycje_by_zlecenia_id(zlecenia_id_list):
 
-    cursor = get_cursor()
+    cursor = get_input_cursor()
     pozycje_query = f"""
     SELECT [FAKTURY_ID]
           ,[ZLECENIE_ID]

@@ -1,5 +1,6 @@
 import pandas as pd
 import pymssql
+import psycopg2
 
 
 def dataframe_from_query(given_cursor, given_query):
@@ -11,7 +12,7 @@ def dataframe_from_query(given_cursor, given_query):
     return return_dataframe
 
 
-def get_cursor():
+def get_input_cursor():
     conn = pymssql.connect(
         server='10.100.200.3',
         port='1433',
@@ -20,5 +21,20 @@ def get_cursor():
         database='SPEED',
         charset='ISO-8859-2')
     cursor = conn.cursor()
+
+    return cursor
+
+
+def get_output_cursor():
+    conn = psycopg2.connect(
+        host='10.100.200.3',
+        port='5432',
+        database="postgres",
+        user="postgres",
+        password='DbMot!v@SerWBaza22#')
+
+    cursor = conn.cursor()
+    cursor.execute("SELECT version();")
+    print(cursor.fetchone()[0])
 
     return cursor
