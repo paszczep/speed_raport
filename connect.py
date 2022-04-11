@@ -19,7 +19,9 @@ def get_input_cursor():
         user='pawel',
         password='20Al3Mot@VP@weL22#',
         database='SPEED',
-        charset='ISO-8859-2')
+        # charset='ISO-8859-2',
+        charset='CP1250'
+    )
     cursor = conn.cursor()
 
     return cursor

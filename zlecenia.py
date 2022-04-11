@@ -22,14 +22,20 @@ def clean_zlec_df(zlec_df):
     zlec_df.fillna('', inplace=True)
     zlec_df.FAKTURA_ZB_ID = zlec_df.FAKTURA_ZB_ID.astype(str).replace('0', '')
 
-    for col in zlec_df.columns:
-        if isinstance(zlec_df[col].dtype, str):
-            try:
-                zlec_df[col] = zlec_df[col].str.replace('Ľ', 'Ą')
-            except ValueError as exception:
-                print(col, exception)
-                pass
-
+    # for col in zlec_df.columns:
+    #     print(zlec_df[col].dtype)
+    #     if isinstance(zlec_df[col].dtype, object) and 'NETTO' not in str(col):
+    #         print(True)
+    #         try:
+    #             zlec_df[col] = zlec_df[col].str.replace('Ľ', 'Ą')
+    #             zlec_df[col] = zlec_df[col].str.replace('', 'ś')
+    #             zlec_df[col] = zlec_df[col].str.replace('', 'Ś')
+    #             # zlec_df[col] = zlec_df[col].str.decode('ISO-8859-2', 'strict')
+    #             # zlec_df[col] = zlec_df[col].str.encode('UTF-8', 'strict')
+    #         except Exception as exception:
+    #             print(col, exception)
+    #             pass
+    print(zlec_df)
     return zlec_df
 
 
