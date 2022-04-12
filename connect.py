@@ -1,6 +1,7 @@
 import pandas as pd
 import pymssql
 import psycopg2
+from sqlalchemy import create_engine
 
 
 def dataframe_from_query(given_cursor, given_query):
@@ -40,3 +41,9 @@ def get_output_connection():
     # print(cursor.fetchone()[0])
 
     return connection
+
+
+def get_output_engine():
+    engine = create_engine('postgresql://postgres:DbMot!v@SerWBaza22#@10.100.200.3:5432/postgres',
+                           encoding='ISO-8859-2')
+    return engine

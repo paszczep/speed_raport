@@ -107,16 +107,18 @@ def get_raport_df():
     zlec_df[['ZA_DATA']].update(zlec_df[['ZA_DATA_RZ']])
     zlec_df[['WY_DATA']].update(zlec_df[['WY_DATA_RZ']])
     zlec_df['_TIMESTAMP'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    zlec_df['INFORMACJE'] = ''
 
     relevant_zlec_cols = ['_TIMESTAMP', 'NR_ZLECENIA',
                           'SPEDYTOR', 'OPIEKUN', 'ZA_MIEJSCE',
                           'ZA_DATA', 'WY_DATA',
                           'WY_MIEJSCE', 'WY_MIASTO', 'WY_KRAJ', 'WY_KOD',
                           'ZA_MIASTO', 'ZA_KRAJ', 'ZA_KOD', 'TRASA',
-                          'OPIS', 'NETTO_PLN_PRZYCH', 'NETTO_PLN_KOSZT', 'NOTY_NETTO_PLN', 'SALDO_NETTO']
+                          'OPIS', 'INFORMACJE',
+                          'NETTO_PLN_PRZYCH', 'NETTO_PLN_KOSZT', 'NOTY_NETTO_PLN', 'SALDO_NETTO']
 
-    # zlec_df.to_excel('output.xlsx', columns=relevant_zlec_cols)
-    # zlec_df.to_csv('output.csv', encoding='ISO-8859-2', columns=relevant_zlec_cols)
+    zlec_df.to_excel('output.xlsx', columns=relevant_zlec_cols)
+    # zlec_df.to_csv('output.csv', encoding='UTF-8', columns=relevant_zlec_cols)
 
     return zlec_df[relevant_zlec_cols]
 

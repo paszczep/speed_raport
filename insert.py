@@ -1,6 +1,6 @@
 from connect import get_output_connection
 from join import get_raport_df
-from sqlalchemy import create_engine
+from connect import get_output_engine
 
 conn = get_output_connection()
 
@@ -10,7 +10,7 @@ schema_name = 'public'
 
 table_name = 'zlecenia_raport'
 # print('len df', len(raport_df))
-engine = create_engine('postgresql://postgres:DbMot!v@SerWBaza22#@10.100.200.3:5432/postgres', encoding='ISO-8859-2')
+engine = get_output_engine()
 raport_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='replace', index=False)
 
 # data_columns_list = []
