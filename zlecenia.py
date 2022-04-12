@@ -35,7 +35,7 @@ def clean_zlec_df(zlec_df):
     #         except Exception as exception:
     #             print(col, exception)
     #             pass
-    print(zlec_df)
+    # print(zlec_df)
     return zlec_df
 
 

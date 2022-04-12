@@ -9,7 +9,7 @@ raport_df = get_raport_df()
 schema_name = 'public'
 
 table_name = 'zlecenia_raport'
-
+# print('len df', len(raport_df))
 engine = create_engine('postgresql://postgres:DbMot!v@SerWBaza22#@10.100.200.3:5432/postgres', encoding='ISO-8859-2')
 raport_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='replace', index=False)
 

@@ -19,6 +19,7 @@ def _calc(series):
 
 def get_raport_df():
     zlec_df = run_get_zlecenia()
+    # print(zlec_df)
     zlec_df.fillna('', inplace=True)
     relevant_zlec_ids = str(set(zlec_df.ID_ZLECENIA.to_list()))
     relevant_zlec_ids = relevant_zlec_ids.replace('{', '(').replace('}', ')')
@@ -105,7 +106,6 @@ def get_raport_df():
 
     zlec_df[['ZA_DATA']].update(zlec_df[['ZA_DATA_RZ']])
     zlec_df[['WY_DATA']].update(zlec_df[['WY_DATA_RZ']])
-
     zlec_df['_TIMESTAMP'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     relevant_zlec_cols = ['_TIMESTAMP', 'NR_ZLECENIA',
@@ -115,7 +115,7 @@ def get_raport_df():
                           'ZA_MIASTO', 'ZA_KRAJ', 'ZA_KOD', 'TRASA',
                           'OPIS', 'NETTO_PLN_PRZYCH', 'NETTO_PLN_KOSZT', 'NOTY_NETTO_PLN', 'SALDO_NETTO']
 
-    zlec_df.to_excel('output.xlsx', columns=relevant_zlec_cols)
+    # zlec_df.to_excel('output.xlsx', columns=relevant_zlec_cols)
     # zlec_df.to_csv('output.csv', encoding='ISO-8859-2', columns=relevant_zlec_cols)
 
     return zlec_df[relevant_zlec_cols]
