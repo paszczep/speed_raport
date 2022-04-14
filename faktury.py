@@ -29,6 +29,8 @@ def get_faktury_by_zlecenia_id(zlecenia_id_list):
          [ID_FAKTURY]
         ,[NUMER_FAKTURY]
         ,[ZLECENIE_ID]
+        ,[DATA_WYSTAWIENIA]
+        ,[DATA_PLATNOSCI]
         ,[NOTA], [NOTA_UZNANIOWA]
       FROM [SPEED].[dbo].[FAKTURY] 
     WHERE ZLECENIE_ID IN {zlecenia_id_list}

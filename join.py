@@ -25,10 +25,10 @@ def get_raport_df():
     relevant_zlec_ids = relevant_zlec_ids.replace('{', '(').replace('}', ')')
     faktury_df = get_faktury_by_zlecenia_id(relevant_zlec_ids)
     pozycje_df = get_pozycje_by_zlecenia_id(relevant_zlec_ids)
-
+    print(faktury_df.columns)
     pozycje_df['INDEX_POZYCJE'] = _index(pozycje_df['FAKTURY_ID']) + _index(pozycje_df['ZLECENIE_ID'])
     pozycje_df.drop(['FAKTURY_ID', 'ZLECENIE_ID'], axis=1, inplace=True)
-    faktury_cols = ['ID_FAKTURY', 'NUMER_FAKTURY', 'ZLECENIE_ID']
+    faktury_cols = ['ID_FAKTURY', 'NUMER_FAKTURY', 'ZLECENIE_ID', 'DATA_WYSTAWIENIA', 'DATA_PLATNOSCI']
 
     koszt_ids = faktury_df.loc[faktury_df.NUMER_FAKTURY.isin(set(zlec_df.FAKTURA_K.to_list()))][faktury_cols]
     koszt_ids['INDEX'] = koszt_ids['NUMER_FAKTURY'] + _index(koszt_ids['ZLECENIE_ID'])
@@ -108,13 +108,15 @@ def get_raport_df():
     zlec_df[['WY_DATA']].update(zlec_df[['WY_DATA_RZ']])
     zlec_df['_TIMESTAMP'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     zlec_df['INFORMACJE'] = ''
-
+    print(zlec_df.columns)
     relevant_zlec_cols = ['_TIMESTAMP', 'NR_ZLECENIA',
                           'SPEDYTOR', 'OPIEKUN', 'ZA_MIEJSCE',
                           'ZA_DATA', 'WY_DATA',
                           'WY_MIEJSCE', 'WY_MIASTO', 'WY_KRAJ', 'WY_KOD',
                           'ZA_MIASTO', 'ZA_KRAJ', 'ZA_KOD', 'TRASA',
                           'OPIS', 'INFORMACJE',
+                          'DATA_WYSTAWIENIA_KOSZT', 'DATA_PLATNOSCI_KOSZT',
+                          'DATA_WYSTAWIENIA_PRZYCH', 'DATA_PLATNOSCI_PRZYCH',
                           'NETTO_PLN_PRZYCH', 'NETTO_PLN_KOSZT', 'NOTY_NETTO_PLN', 'SALDO_NETTO']
 
     zlec_df.to_excel('output.xlsx', columns=relevant_zlec_cols)
