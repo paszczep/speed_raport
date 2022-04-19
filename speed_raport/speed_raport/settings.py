@@ -73,14 +73,23 @@ WSGI_APPLICATION = 'speed_raport.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+OUT_DB = {
+    'host': '10.100.200.3',
+    'port': '5432',
+    'database': "speed",
+    'user': "postgres",
+    'password': "DbMot!v@SerWBaza22#"
+}
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        'USER': '<db_username>',
-        'PASSWORD': '<password>',
-        'HOST': '<db_hostname_or_ip>',
-        'PORT': '<db_port>',
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': f'{OUT_DB["database"]}',
+        'USER': f'{OUT_DB["user"]}',
+        'PASSWORD': f'{OUT_DB["password"]}',
+        'HOST': f'{OUT_DB["host"]}',
+        'PORT': f'{OUT_DB["port"]}',
     }
 }
 
