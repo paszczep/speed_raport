@@ -1,6 +1,6 @@
 import pandas as pd
 import pymssql
-import psycopg2
+# import psycopg2
 from sqlalchemy import create_engine
 
 
@@ -28,19 +28,19 @@ def get_input_cursor():
     return cursor
 
 
-def get_output_connection():
-    connection = psycopg2.connect(
-        host='10.100.200.3',
-        port='5432',
-        database="postgres",
-        user="postgres",
-        password='DbMot!v@SerWBaza22#')
-
-    # cursor = connection.cursor()
-    # cursor.execute("SELECT version();")
-    # print(cursor.fetchone()[0])
-
-    return connection
+# def get_output_connection():
+#     connection = psycopg2.connect(
+#         host='10.100.200.3',
+#         port='5432',
+#         database="postgres",
+#         user="postgres",
+#         password='DbMot!v@SerWBaza22#')
+#
+#     # cursor = connection.cursor()
+#     # cursor.execute("SELECT version();")
+#     # print(cursor.fetchone()[0])
+#
+#     return connection
 
 
 def get_output_engine():

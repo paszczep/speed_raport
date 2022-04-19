@@ -1,8 +1,8 @@
-from connect import get_output_connection
+# from connect import get_output_connection
 from join import get_raport_df
 from connect import get_output_engine
 
-conn = get_output_connection()
+# conn = get_output_connection()
 
 raport_df = get_raport_df()
 
@@ -11,7 +11,7 @@ schema_name = 'public'
 table_name = 'zlecenia_raport'
 # print('len df', len(raport_df))
 engine = get_output_engine()
-raport_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='replace', index=False)
+raport_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
 
 # data_columns_list = []
 # for col in raport_df.columns:

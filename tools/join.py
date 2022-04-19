@@ -119,7 +119,7 @@ def get_raport_df():
                           'DATA_WYSTAWIENIA_PRZYCH', 'DATA_PLATNOSCI_PRZYCH',
                           'NETTO_PLN_PRZYCH', 'NETTO_PLN_KOSZT', 'NOTY_NETTO_PLN', 'SALDO_NETTO']
 
-    zlec_df.to_excel('output.xlsx', columns=relevant_zlec_cols)
+    # zlec_df.to_excel('output.xlsx', columns=relevant_zlec_cols)
     # zlec_df.to_csv('output.csv', encoding='UTF-8', columns=relevant_zlec_cols)
 
     return zlec_df[relevant_zlec_cols]
