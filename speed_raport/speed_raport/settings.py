@@ -76,9 +76,9 @@ WSGI_APPLICATION = 'speed_raport.wsgi.application'
 OUT_DB = {
     'host': '10.100.200.3',
     'port': '5432',
-    'database': "speed",
+    'database': "postgres",
     'user': "postgres",
-    'password': "DbMot!v@SerWBaza22#"
+    'password': "S4FVVyqlkPexcBryOx7Q5hVMuDY70eQl"
 }
 
 DATABASES = {
