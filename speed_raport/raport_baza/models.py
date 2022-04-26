@@ -124,7 +124,7 @@ class DjangoSession(models.Model):
 
 class ZleceniaRaport(models.Model):
     field_timestamp = models.TextField(db_column='_TIMESTAMP', blank=True, null=True)  # Field name made lowercase. Field renamed because it started with '_'.
-    nr_zlecenia = models.TextField(db_column='NR_ZLECENIA', blank=True, null=True)  # Field name made lowercase.
+    nr_zlecenia = models.TextField(db_column='NR_ZLECENIA', blank=True, null=True, unique=True)  # Field name made lowercase.
     spedytor = models.TextField(db_column='SPEDYTOR', blank=True, null=True)  # Field name made lowercase.
     opiekun = models.TextField(db_column='OPIEKUN', blank=True, null=True)  # Field name made lowercase.
     za_miejsce = models.TextField(db_column='ZA_MIEJSCE', blank=True, null=True)  # Field name made lowercase.
@@ -148,6 +148,9 @@ class ZleceniaRaport(models.Model):
     netto_pln_koszt = models.TextField(db_column='NETTO_PLN_KOSZT', blank=True, null=True)  # Field name made lowercase.
     noty_netto_pln = models.TextField(db_column='NOTY_NETTO_PLN', blank=True, null=True)  # Field name made lowercase.
     saldo_netto = models.TextField(db_column='SALDO_NETTO', blank=True, null=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.nr_zlecenia, self.trasa, self.saldo_netto
 
     class Meta:
         managed = True

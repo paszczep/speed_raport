@@ -108,8 +108,9 @@ def get_raport_df():
     zlec_df[['WY_DATA']].update(zlec_df[['WY_DATA_RZ']])
     zlec_df['_TIMESTAMP'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     zlec_df['INFORMACJE'] = ''
+    zlec_df['id'] = ''
     print(zlec_df.columns)
-    relevant_zlec_cols = ['_TIMESTAMP', 'NR_ZLECENIA',
+    relevant_zlec_cols = ['id', '_TIMESTAMP', 'NR_ZLECENIA',
                           'SPEDYTOR', 'OPIEKUN', 'ZA_MIEJSCE',
                           'ZA_DATA', 'WY_DATA',
                           'WY_MIEJSCE', 'WY_MIASTO', 'WY_KRAJ', 'WY_KOD',
