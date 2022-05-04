@@ -123,13 +123,13 @@ class DjangoSession(models.Model):
 
 
 class ZleceniaRaport(models.Model):
-    field_timestamp = models.TextField(db_column='_TIMESTAMP', blank=True, null=True)  # Field name made lowercase. Field renamed because it started with '_'.
+    field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True)  # Field name made lowercase. Field renamed because it started with '_'.
     nr_zlecenia = models.TextField(db_column='NR_ZLECENIA', blank=True, null=True, unique=True)  # Field name made lowercase.
     spedytor = models.TextField(db_column='SPEDYTOR', blank=True, null=True)  # Field name made lowercase.
     opiekun = models.TextField(db_column='OPIEKUN', blank=True, null=True)  # Field name made lowercase.
     za_miejsce = models.TextField(db_column='ZA_MIEJSCE', blank=True, null=True)  # Field name made lowercase.
-    za_data = models.DateTimeField(db_column='ZA_DATA', blank=True, null=True)  # Field name made lowercase.
-    wy_data = models.DateTimeField(db_column='WY_DATA', blank=True, null=True)  # Field name made lowercase.
+    za_data = models.DateField(db_column='ZA_DATA', blank=True, null=True)  # Field name made lowercase.
+    wy_data = models.DateField(db_column='WY_DATA', blank=True, null=True)  # Field name made lowercase.
     wy_miejsce = models.TextField(db_column='WY_MIEJSCE', blank=True, null=True)  # Field name made lowercase.
     wy_miasto = models.TextField(db_column='WY_MIASTO', blank=True, null=True)  # Field name made lowercase.
     wy_kraj = models.TextField(db_column='WY_KRAJ', blank=True, null=True)  # Field name made lowercase.
@@ -140,10 +140,10 @@ class ZleceniaRaport(models.Model):
     trasa = models.TextField(db_column='TRASA', blank=True, null=True)  # Field name made lowercase.
     opis = models.TextField(db_column='OPIS', blank=True, null=True)  # Field name made lowercase.
     informacje = models.TextField(db_column='INFORMACJE', blank=True, null=True)  # Field name made lowercase.
-    data_wystawienia_koszt = models.DateTimeField(db_column='DATA_WYSTAWIENIA_KOSZT', blank=True, null=True)  # Field name made lowercase.
-    data_platnosci_koszt = models.DateTimeField(db_column='DATA_PLATNOSCI_KOSZT', blank=True, null=True)  # Field name made lowercase.
-    data_wystawienia_przych = models.DateTimeField(db_column='DATA_WYSTAWIENIA_PRZYCH', blank=True, null=True)  # Field name made lowercase.
-    data_platnosci_przych = models.DateTimeField(db_column='DATA_PLATNOSCI_PRZYCH', blank=True, null=True)  # Field name made lowercase.
+    data_wystawienia_koszt = models.DateField(db_column='DATA_WYSTAWIENIA_KOSZT', blank=True, null=True)  # Field name made lowercase.
+    data_platnosci_koszt = models.DateField(db_column='DATA_PLATNOSCI_KOSZT', blank=True, null=True)  # Field name made lowercase.
+    data_wystawienia_przych = models.DateField(db_column='DATA_WYSTAWIENIA_PRZYCH', blank=True, null=True)  # Field name made lowercase.
+    data_platnosci_przych = models.DateField(db_column='DATA_PLATNOSCI_PRZYCH', blank=True, null=True)  # Field name made lowercase.
     netto_pln_przych = models.TextField(db_column='NETTO_PLN_PRZYCH', blank=True, null=True)  # Field name made lowercase.
     netto_pln_koszt = models.TextField(db_column='NETTO_PLN_KOSZT', blank=True, null=True)  # Field name made lowercase.
     noty_netto_pln = models.TextField(db_column='NOTY_NETTO_PLN', blank=True, null=True)  # Field name made lowercase.
