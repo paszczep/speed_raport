@@ -123,10 +123,8 @@ class DjangoSession(models.Model):
 
 
 class ZleceniaRaport(models.Model):
-    field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True,
-                                           null=True)  # Field name made lowercase. Field renamed because it started with '_'.
-    nr_zlecenia = models.CharField(db_column='NR_ZLECENIA', blank=True, null=True,
-                                   unique=True, max_length=50)  # Field name made lowercase.
+    field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True)  # Field name made lowercase. Field renamed because it started with '_'.
+    nr_zlecenia = models.CharField(db_column='NR_ZLECENIA', blank=True, null=True, unique=True, max_length=50)  # Field name made lowercase.
     spedytor = models.CharField(db_column='SPEDYTOR', blank=True, null=True, max_length=50)  # Field name made lowercase.
     opiekun = models.CharField(db_column='OPIEKUN', blank=True, null=True, max_length=50)  # Field name made lowercase.
     za_miejsce = models.CharField(db_column='ZA_MIEJSCE', blank=True, null=True, max_length=50)  # Field name made lowercase.
@@ -142,16 +140,11 @@ class ZleceniaRaport(models.Model):
     trasa = models.CharField(db_column='TRASA', blank=True, null=True, max_length=150)  # Field name made lowercase.
     opis = models.CharField(db_column='OPIS', blank=True, null=True, max_length=50)  # Field name made lowercase.
     informacje = models.CharField(db_column='INFORMACJE', blank=True, null=True, max_length=250)  # Field name made lowercase.
-    data_wystawienia_koszt = models.DateField(db_column='DATA_WYSTAWIENIA_KOSZT', blank=True,
-                                              null=True)  # Field name made lowercase.
-    data_platnosci_koszt = models.DateField(db_column='DATA_PLATNOSCI_KOSZT', blank=True,
-                                            null=True)  # Field name made lowercase.
-    data_wystawienia_przych = models.DateField(db_column='DATA_WYSTAWIENIA_PRZYCH', blank=True,
-                                               null=True)  # Field name made lowercase.
-    data_platnosci_przych = models.DateField(db_column='DATA_PLATNOSCI_PRZYCH', blank=True,
-                                             null=True)  # Field name made lowercase.
-    netto_pln_przych = models.CharField(db_column='NETTO_PLN_PRZYCH', blank=True,
-                                        null=True, max_length=20)  # Field name made lowercase.
+    data_wystawienia_koszt = models.DateField(db_column='DATA_WYSTAWIENIA_KOSZT', blank=True, null=True)  # Field name made lowercase.
+    data_platnosci_koszt = models.DateField(db_column='DATA_PLATNOSCI_KOSZT', blank=True, null=True)  # Field name made lowercase.
+    data_wystawienia_przych = models.DateField(db_column='DATA_WYSTAWIENIA_PRZYCH', blank=True, null=True)  # Field name made lowercase.
+    data_platnosci_przych = models.DateField(db_column='DATA_PLATNOSCI_PRZYCH', blank=True, null=True)  # Field name made lowercase.
+    netto_pln_przych = models.CharField(db_column='NETTO_PLN_PRZYCH', blank=True, null=True, max_length=20)  # Field name made lowercase.
     netto_pln_koszt = models.CharField(db_column='NETTO_PLN_KOSZT', blank=True, null=True, max_length=20)  # Field name made lowercase.
     noty_netto_pln = models.CharField(db_column='NOTY_NETTO_PLN', blank=True, null=True, max_length=20)  # Field name made lowercase.
     saldo_netto = models.CharField(db_column='SALDO_NETTO', blank=True, null=True, max_length=20)  # Field name made lowercase.
