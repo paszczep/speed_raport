@@ -1,7 +1,7 @@
 import pandas as pd
 import uuid
 from datetime import datetime
-import pytz
+# import pytz
 from zlecenia import run_get_zlecenia
 from faktury import get_pozycje_by_zlecenia_id, get_faktury_by_zlecenia_id
 
@@ -108,8 +108,8 @@ def get_raport_df():
 
     zlec_df[['ZA_DATA']].update(zlec_df[['ZA_DATA_RZ']])
     zlec_df[['WY_DATA']].update(zlec_df[['WY_DATA_RZ']])
-    zlec_df['_TIMESTAMP'] = datetime.now(pytz.timezone('Europe/Warsaw'))
-    # zlec_df['_TIMESTAMP'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # zlec_df['_TIMESTAMP'] = datetime.now(pytz.timezone('Europe/Warsaw'))
+    zlec_df['_TIMESTAMP'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     zlec_df['INFORMACJE'] = ''
     zlec_df['id'] = zlec_df.apply(lambda _: uuid.uuid4(), axis=1)
     # print(zlec_df.columns)

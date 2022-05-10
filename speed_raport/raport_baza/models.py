@@ -124,8 +124,9 @@ class DjangoSession(models.Model):
 
 
 class ZleceniaRaport(models.Model):
-    id = models.CharField(db_column='id', max_length=36, primary_key=True, serialize=False)
-    field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True)
+    id = models.CharField(db_column='id', max_length=36, primary_key=True, serialize=False, unique=True)
+    # field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True)
+    field_timestamp = models.CharField(db_column='_TIMESTAMP', blank=True, null=True, max_length=19)
     nr_zlecenia = models.CharField(db_column='NR_ZLECENIA', blank=True, null=True, max_length=50)
     spedytor = models.CharField(db_column='SPEDYTOR', blank=True, null=True, max_length=50)
     opiekun = models.CharField(db_column='OPIEKUN', blank=True, null=True, max_length=50)
@@ -142,10 +143,10 @@ class ZleceniaRaport(models.Model):
     trasa = models.CharField(db_column='TRASA', blank=True, null=True, max_length=150)
     opis = models.CharField(db_column='OPIS', blank=True, null=True, max_length=50)
     informacje = models.CharField(db_column='INFORMACJE', blank=True, null=True, max_length=250)
-    data_wystawienia_koszt = models.DateField(db_column='DATA_WYSTAWIENIA_KOSZT', blank=True, null=True)
-    data_platnosci_koszt = models.DateField(db_column='DATA_PLATNOSCI_KOSZT', blank=True, null=True)
-    data_wystawienia_przych = models.DateField(db_column='DATA_WYSTAWIENIA_PRZYCH', blank=True, null=True)
-    data_platnosci_przych = models.DateField(db_column='DATA_PLATNOSCI_PRZYCH', blank=True, null=True)
+    data_wystawienia_koszt = models.CharField(db_column='DATA_WYSTAWIENIA_KOSZT', blank=True, null=True, max_length=10)
+    data_platnosci_koszt = models.CharField(db_column='DATA_PLATNOSCI_KOSZT', blank=True, null=True, max_length=10)
+    data_wystawienia_przych = models.CharField(db_column='DATA_WYSTAWIENIA_PRZYCH', blank=True, null=True, max_length=10)
+    data_platnosci_przych = models.CharField(db_column='DATA_PLATNOSCI_PRZYCH', blank=True, null=True, max_length=10)
     netto_pln_przych = models.CharField(db_column='NETTO_PLN_PRZYCH', blank=True, null=True, max_length=20)
     netto_pln_koszt = models.CharField(db_column='NETTO_PLN_KOSZT', blank=True, null=True, max_length=20)
     noty_netto_pln = models.CharField(db_column='NOTY_NETTO_PLN', blank=True, null=True, max_length=20)

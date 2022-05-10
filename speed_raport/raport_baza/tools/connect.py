@@ -61,6 +61,6 @@ OUT_DB = {
 def get_output_engine():
     # create_str = 'postgresql://postgres:DbMot!v@SerWBaza22#@10.100.200.3:5432/postgres'
     engine_str = f"postgresql://{OUT_DB['user']}:{OUT_DB['password']}@{OUT_DB['host']}:{OUT_DB['port']}/{OUT_DB['database']}"
-    print(engine_str)
+    # print(engine_str)
     engine = create_engine(engine_str, encoding='ISO-8859-2')
     return engine
