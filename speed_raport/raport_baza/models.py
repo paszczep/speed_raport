@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+# from speed_raport.tools.insert import insert_into_database
 
 
 class AuthGroup(models.Model):
@@ -123,38 +124,50 @@ class DjangoSession(models.Model):
 
 
 class ZleceniaRaport(models.Model):
-    field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True)  # Field name made lowercase. Field renamed because it started with '_'.
-    nr_zlecenia = models.CharField(db_column='NR_ZLECENIA', blank=True, null=True, unique=True, max_length=50)  # Field name made lowercase.
-    spedytor = models.CharField(db_column='SPEDYTOR', blank=True, null=True, max_length=50)  # Field name made lowercase.
-    opiekun = models.CharField(db_column='OPIEKUN', blank=True, null=True, max_length=50)  # Field name made lowercase.
-    za_miejsce = models.CharField(db_column='ZA_MIEJSCE', blank=True, null=True, max_length=50)  # Field name made lowercase.
-    za_data = models.DateField(db_column='ZA_DATA', blank=True, null=True)  # Field name made lowercase.
-    wy_data = models.DateField(db_column='WY_DATA', blank=True, null=True)  # Field name made lowercase.
-    wy_miejsce = models.CharField(db_column='WY_MIEJSCE', blank=True, null=True, max_length=150)  # Field name made lowercase.
-    wy_miasto = models.CharField(db_column='WY_MIASTO', blank=True, null=True, max_length=50)  # Field name made lowercase.
-    wy_kraj = models.CharField(db_column='WY_KRAJ', blank=True, null=True, max_length=5)  # Field name made lowercase.
-    wy_kod = models.CharField(db_column='WY_KOD', blank=True, null=True, max_length=20)  # Field name made lowercase.
-    za_miasto = models.CharField(db_column='ZA_MIASTO', blank=True, null=True, max_length=50)  # Field name made lowercase.
-    za_kraj = models.CharField(db_column='ZA_KRAJ', blank=True, null=True, max_length=5)  # Field name made lowercase.
-    za_kod = models.CharField(db_column='ZA_KOD', blank=True, null=True, max_length=20)  # Field name made lowercase.
-    trasa = models.CharField(db_column='TRASA', blank=True, null=True, max_length=150)  # Field name made lowercase.
-    opis = models.CharField(db_column='OPIS', blank=True, null=True, max_length=50)  # Field name made lowercase.
-    informacje = models.CharField(db_column='INFORMACJE', blank=True, null=True, max_length=250)  # Field name made lowercase.
-    data_wystawienia_koszt = models.DateField(db_column='DATA_WYSTAWIENIA_KOSZT', blank=True, null=True)  # Field name made lowercase.
-    data_platnosci_koszt = models.DateField(db_column='DATA_PLATNOSCI_KOSZT', blank=True, null=True)  # Field name made lowercase.
-    data_wystawienia_przych = models.DateField(db_column='DATA_WYSTAWIENIA_PRZYCH', blank=True, null=True)  # Field name made lowercase.
-    data_platnosci_przych = models.DateField(db_column='DATA_PLATNOSCI_PRZYCH', blank=True, null=True)  # Field name made lowercase.
-    netto_pln_przych = models.CharField(db_column='NETTO_PLN_PRZYCH', blank=True, null=True, max_length=20)  # Field name made lowercase.
-    netto_pln_koszt = models.CharField(db_column='NETTO_PLN_KOSZT', blank=True, null=True, max_length=20)  # Field name made lowercase.
-    noty_netto_pln = models.CharField(db_column='NOTY_NETTO_PLN', blank=True, null=True, max_length=20)  # Field name made lowercase.
-    saldo_netto = models.CharField(db_column='SALDO_NETTO', blank=True, null=True, max_length=20)  # Field name made lowercase.
+    id = models.CharField(db_column='id', max_length=36, primary_key=True, serialize=False)
+    field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True)
+    nr_zlecenia = models.CharField(db_column='NR_ZLECENIA', blank=True, null=True, max_length=50)
+    spedytor = models.CharField(db_column='SPEDYTOR', blank=True, null=True, max_length=50)
+    opiekun = models.CharField(db_column='OPIEKUN', blank=True, null=True, max_length=50)
+    za_miejsce = models.CharField(db_column='ZA_MIEJSCE', blank=True, null=True, max_length=150, verbose_name='Miejsce załadunku')
+    za_miasto = models.CharField(db_column='ZA_MIASTO', blank=True, null=True, max_length=50, verbose_name='Miasto załadunku')
+    za_kraj = models.CharField(db_column='ZA_KRAJ', blank=True, null=True, max_length=5, verbose_name='Kraj załadunku')
+    za_kod = models.CharField(db_column='ZA_KOD', blank=True, null=True, max_length=20, verbose_name='Kod załadunku')
+    za_data = models.DateField(db_column='ZA_DATA', blank=True, null=True, verbose_name='Data załadunku')
+    wy_data = models.DateField(db_column='WY_DATA', blank=True, null=True, verbose_name='Data wyładunku')
+    wy_miejsce = models.CharField(db_column='WY_MIEJSCE', blank=True, null=True, max_length=150, verbose_name='Miejsce wyładunku')
+    wy_miasto = models.CharField(db_column='WY_MIASTO', blank=True, null=True, max_length=50, verbose_name='Miasto wyładunku')
+    wy_kraj = models.CharField(db_column='WY_KRAJ', blank=True, null=True, max_length=5, verbose_name='Kraj wyładunku')
+    wy_kod = models.CharField(db_column='WY_KOD', blank=True, null=True, max_length=20, verbose_name='Miejsce wyładunku')
+    trasa = models.CharField(db_column='TRASA', blank=True, null=True, max_length=150)
+    opis = models.CharField(db_column='OPIS', blank=True, null=True, max_length=50)
+    informacje = models.CharField(db_column='INFORMACJE', blank=True, null=True, max_length=250)
+    data_wystawienia_koszt = models.DateField(db_column='DATA_WYSTAWIENIA_KOSZT', blank=True, null=True)
+    data_platnosci_koszt = models.DateField(db_column='DATA_PLATNOSCI_KOSZT', blank=True, null=True)
+    data_wystawienia_przych = models.DateField(db_column='DATA_WYSTAWIENIA_PRZYCH', blank=True, null=True)
+    data_platnosci_przych = models.DateField(db_column='DATA_PLATNOSCI_PRZYCH', blank=True, null=True)
+    netto_pln_przych = models.CharField(db_column='NETTO_PLN_PRZYCH', blank=True, null=True, max_length=20)
+    netto_pln_koszt = models.CharField(db_column='NETTO_PLN_KOSZT', blank=True, null=True, max_length=20)
+    noty_netto_pln = models.CharField(db_column='NOTY_NETTO_PLN', blank=True, null=True, max_length=20)
+    saldo_netto = models.CharField(db_column='SALDO_NETTO', blank=True, null=True, max_length=20)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.nr_zlecenia, self.trasa, self.saldo_netto
+        return self.nr_zlecenia
 
     class Meta:
         managed = True
         db_table = 'zlecenia_raport'
+
+
+# class Refresh(models.Model):
+#     code = models.TextField()
+#     was_executed_before = models.BooleanField(default=False)
+#
+#     def execute(self):
+#         insert_into_database()
 
 
 # class ZleceniaRaport(models.Model):
