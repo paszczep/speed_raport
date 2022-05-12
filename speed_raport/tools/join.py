@@ -2,8 +2,8 @@ import pandas as pd
 import uuid
 from datetime import datetime
 # import pytz
-from zlecenia import run_get_zlecenia
-from faktury import get_pozycje_by_zlecenia_id, get_faktury_by_zlecenia_id
+from tools.zlecenia import run_get_zlecenia
+from tools.faktury import get_pozycje_by_zlecenia_id, get_faktury_by_zlecenia_id
 
 DATETIME_FORMAT = '%Y-%m-%d_%H%M'
 

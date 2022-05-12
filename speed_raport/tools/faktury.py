@@ -1,4 +1,4 @@
-from connect import get_input_cursor, dataframe_from_query
+from tools.connect import get_input_cursor, dataframe_from_query
 
 
 def get_noty_by_zlecenia_id(zlecenia_id_list):

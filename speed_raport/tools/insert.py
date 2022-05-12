@@ -1,41 +1,31 @@
 # from connect import get_output_connection
-from join import get_raport_df
-from connect import get_output_engine
+from tools.join import get_raport_df
+from tools.connect import get_output_engine
+import pandas as pd
 
 # conn = get_output_connection()
 
-raport_df = get_raport_df()
 
-schema_name = 'public'
+def insert_into_database():
+    raport_df = get_raport_df().astype(str)
+    # print('1', len(raport_df))
 
-table_name = 'zlecenia_raport'
-# print('len df', len(raport_df))
-engine = get_output_engine()
-raport_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
-
-# data_columns_list = []
-# for col in raport_df.columns:
-#     if 'TIME' in col:
-#         col_str = ' '.join([col, 'timestamp without time zone'])
-#     elif 'DATE' in col:
-#         col_str = ' '.join([col, 'date'])
-#     elif 'NETTO' in col:
-#         col_str = ' '.join([col, 'numeric(12,2)'])
-#     else:
-#         col_str = ' '.join([col, 'character varying'])
-#     data_columns_list.append(col_str)
-#
-# columns_str = ', '.join(data_columns_list)
-
-# create_table_query = f"""
-#     CREATE TABLE IF NOT EXISTS
-#     {schema_name}.{table_name} ({columns_str})
-#     """
-# print(create_table_query)
-# cursor = conn.cursor()
-# cursor.execute(create_table_query)
-# conn.commit()
+    schema_name = 'public'
+    table_name = 'zlecenia_raport'
+    engine = get_output_engine()
+    existing_df = pd.read_sql_query('select * from "zlecenia_raport"', con=engine).astype(str)
+    raport_df = pd.concat([existing_df, raport_df])
+    # print(list(zlec_df.columns))
+    duplicates_cols = [el for el in raport_df.columns if el not in ['_TIMESTAMP', 'id']]
+    # print('after removing', duplicates_cols)
+    # print('2', len(raport_df))
+    raport_df.drop_duplicates(subset=duplicates_cols, keep=False, ignore_index=True, inplace=True)
+    # print('3', len(raport_df))
+    existing_ids_list = existing_df['id'].to_list()
+    raport_df = raport_df.loc[~(raport_df['id'].isin(existing_ids_list))]
+    # print('4', len(raport_df))
+    raport_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
 
 
-# select_table_query = f"""SELECT * FROM {table_name}"""
-# cursor.execute(select_table_query)
+if __name__ == '__main__':
+    insert_into_database()

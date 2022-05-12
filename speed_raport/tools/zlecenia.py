@@ -1,4 +1,4 @@
-from connect import get_input_cursor, dataframe_from_query
+from tools.connect import get_input_cursor, dataframe_from_query
 
 zlec_cols = ['ID_ZLECENIA', 'NR_ZLECENIA', 'SPEDYTOR', 'OPIEKUN', 'ZA_MIEJSCE', 'ZA_MIASTO', 'ZA_KRAJ', 'ZA_KOD', 'TRASA', 'ZA_DATA', 'ZA_DATA_RZ', 'WY_DATA', 'WY_DATA_RZ', 'WY_DATA_RZ_K', 'WY_MIEJSCE', 'WY_MIASTO', 'WY_KRAJ', 'WY_KOD', 'FAKTURA', 'FAKTURA_ZB_ID', 'FAKTURA_ZB', 'NR_ZLECENIA_K', 'FAKTURA_K', 'FAKTURA_K_ZB', 'FAKTURA_K_ZB_ID', 'LOKALIZACJA', 'STATUS']
 
