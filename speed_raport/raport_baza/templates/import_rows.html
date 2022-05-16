@@ -1,21 +1,21 @@
+</br>
 
 <div>
-    <select id="month">
+    <form action="{% url 'insert_view' %}">
+    <select name="month_dropdown">
     {% for val, month in months_dict.items %}
         <option value="{{ val }}">{{ month }}</option>
     {% endfor %}
     </select>
-</div>
 
-<div>
-    <select id="year">
-    {% for y in years_list %}
-        <option value="{{ y }}">{{ y }}</option>
+    <select name="year_dropdown">
+    {% for year in years_list %}
+        <option value="{{ year }}">{{ year }}</option>
     {% endfor %}
     </select>
-</div>
-<div>
-    <form action="mortal/" method="POST">
+
+        </br></br>
+
         <button type="submit">Go</button>
     </form>
 </div>

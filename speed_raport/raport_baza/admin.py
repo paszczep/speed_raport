@@ -16,7 +16,7 @@ class ZleceniaAdmin(admin.ModelAdmin):
     ordering = ('field_timestamp', 'nr_zlecenia',)
     search_fields = ('id', 'nr_zlecenia', 'spedytor', 'opiekun', )
     list_per_page = 10
-    change_list_template = "zlecenia_changelist.html"
+    # change_list_template = "zlecenia_changelist.html"
 
 
 admin.site.register(ZleceniaRaport, ZleceniaAdmin)

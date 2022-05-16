@@ -28,7 +28,7 @@ def get_zlecenia_query(month: int, year: int):
     YEAR([ZA_DATA]) = {str(year)} AND 
     [ZAFAKTUROWANE] = 1 
     """
-
+    print(zlecenia_format_query)
     return zlecenia_format_query
 
 
