@@ -159,19 +159,6 @@ class ZleceniaRaport(models.Model):
     def __str__(self):
         return self.nr_zlecenia
 
-    # def get_urls(self):
-    #     urls = super().get_urls()
-    #     my_urls = [
-    #         path('immortal/', self.set_immortal),
-    #         path('mortal/', self.set_mortal),
-    #     ]
-    #     return my_urls + urls
-    #
-    #
-    # def insert_into_internal_db(self, request):
-    #     self.model.objects.all().update(is_immortal=True)
-    #     self.message_user(request, "All heroes are now immortal")
-    #     return HttpResponseRedirect("../")
 
     class Meta:
         managed = True
@@ -185,8 +172,4 @@ class ZleceniaRaport(models.Model):
 #         insert_into_database()
 
 
-year_dropdown = []
-for y in range(2011, (datetime.now().year + 5)):
-    year_dropdown.append((y, y))
 
-year = models.IntegerField('year', max_length=4, choices=year_dropdown, default=datetime.now().year)

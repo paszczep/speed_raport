@@ -14,6 +14,24 @@ WHERE LOKALIZACJA = 'KAT_MS' AND MONTH([ZA_DATA]) = 1 AND YEAR([ZA_DATA]) = 2022
 """
 
 
+def get_zlecenia_query(month: int, year: int):
+    zlecenia_format_query = f""" SELECT 
+    [ID_ZLECENIA], [NR_ZLECENIA], [SPEDYTOR], [OPIEKUN], 
+    [ZA_MIEJSCE], [ZA_MIASTO], [ZA_KRAJ], [ZA_KOD], [TRASA], [ZA_DATA], [ZA_DATA_RZ], 
+    [WY_DATA], [WY_DATA_RZ], [WY_DATA_RZ_K], [WY_MIEJSCE], [WY_MIASTO], [WY_KRAJ], [WY_KOD], 
+    [FAKTURA], [FAKTURA_ZB_ID], [FAKTURA_ZB], 
+    [NR_ZLECENIA_K], [FAKTURA_K], [FAKTURA_K_ZB], [FAKTURA_K_ZB_ID], 
+    [LOKALIZACJA], [STATUS] FROM 
+    [SPEED].[dbo].[ZLECENIA] WHERE 
+    LOKALIZACJA = 'KAT_MS' AND 
+    MONTH([ZA_DATA]) = {str(month)} AND 
+    YEAR([ZA_DATA]) = {str(year)} AND 
+    [ZAFAKTUROWANE] = 1 
+    """
+
+    return zlecenia_format_query
+
+
 def clean_zlec_df(zlec_df):
 
     zlec_df.FAKTURA_K_ZB_ID = zlec_df.FAKTURA_K_ZB_ID.astype(str).replace('nan', '0')
@@ -39,10 +57,12 @@ def clean_zlec_df(zlec_df):
     return zlec_df
 
 
-def run_get_zlecenia():
+def run_get_zlecenia_dataframe(month, year):
     cursor = get_input_cursor()
 
-    zlec_df = dataframe_from_query(cursor, zlecenia_query)
+    zlec_query = get_zlecenia_query(month=month, year=year)
+
+    zlec_df = dataframe_from_query(cursor, zlec_query)
     zlec_df = clean_zlec_df(zlec_df)
     # print(zlec_df)
     status_str = str(set(zlec_df['STATUS'].to_list())).replace('{', '(').replace('}', ')')

@@ -1,5 +1,7 @@
 from django.contrib import admin
 from .models import ZleceniaRaport
+from django.shortcuts import render
+from datetime import datetime
 # Register your models here.
 
 #
@@ -16,4 +18,11 @@ class ZleceniaAdmin(admin.ModelAdmin):
     list_per_page = 10
     change_list_template = "zlecenia_changelist.html"
 
+
 admin.site.register(ZleceniaRaport, ZleceniaAdmin)
+
+# year_dropdown = []
+# for y in range(2011, (datetime.now().year + 5)):
+#     year_dropdown.append((y, y))
+
+

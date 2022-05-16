@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_object_actions',
+    # 'django_object_actions',
     'raport_baza',
     'tools',
     'django.contrib.admin'
@@ -54,7 +54,7 @@ ROOT_URLCONF = 'speed_raport.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'raport_baza' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,7 +66,7 @@ TEMPLATES = [
         },
     },
 ]
-
+# print(TEMPLATES[0]['DIRS'][0].is_dir())
 WSGI_APPLICATION = 'speed_raport.wsgi.application'
 
 

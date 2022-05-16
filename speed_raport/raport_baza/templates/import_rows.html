@@ -1,0 +1,21 @@
+
+<div>
+    <select id="month">
+    {% for val, month in months_dict.items %}
+        <option value="{{ val }}">{{ month }}</option>
+    {% endfor %}
+    </select>
+</div>
+
+<div>
+    <select id="year">
+    {% for y in years_list %}
+        <option value="{{ y }}">{{ y }}</option>
+    {% endfor %}
+    </select>
+</div>
+<div>
+    <form action="mortal/" method="POST">
+        <button type="submit">Go</button>
+    </form>
+</div>

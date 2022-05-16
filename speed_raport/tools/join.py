@@ -2,7 +2,7 @@ import pandas as pd
 import uuid
 from datetime import datetime
 # import pytz
-from tools.zlecenia import run_get_zlecenia
+from tools.zlecenia import run_get_zlecenia_dataframe
 from tools.faktury import get_pozycje_by_zlecenia_id, get_faktury_by_zlecenia_id
 
 DATETIME_FORMAT = '%Y-%m-%d_%H%M'
@@ -19,8 +19,8 @@ def _calc(series):
     return series
 
 
-def get_raport_df():
-    zlec_df = run_get_zlecenia()
+def get_raport_df(month, year):
+    zlec_df = run_get_zlecenia_dataframe(month, year)
     # print(zlec_df)
     zlec_df.fillna('', inplace=True)
     relevant_zlec_ids = str(set(zlec_df.ID_ZLECENIA.to_list()))

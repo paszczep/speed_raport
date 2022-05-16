@@ -6,8 +6,8 @@ import pandas as pd
 # conn = get_output_connection()
 
 
-def insert_into_database():
-    raport_df = get_raport_df().astype(str)
+def insert_into_database(month, year):
+    raport_df = get_raport_df(month, year).astype(str)
     # print('1', len(raport_df))
 
     schema_name = 'public'
@@ -28,4 +28,4 @@ def insert_into_database():
 
 
 if __name__ == '__main__':
-    insert_into_database()
+    insert_into_database(month=1, year=2022)
