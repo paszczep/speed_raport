@@ -4,7 +4,11 @@
     <form action="{% url 'insert_view' %}">
     <select name="month_dropdown">
     {% for val, month in months_dict.items %}
+        {% if val == month_now %}
+        <option selected="selected" value="{{ val }}">{{ month }}</option>
+        {% else %}
         <option value="{{ val }}">{{ month }}</option>
+        {% endif %}
     {% endfor %}
     </select>
 

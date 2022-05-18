@@ -17,12 +17,15 @@ def years_list(request):
 
 def select_month_and_year_view(request):
 
-    months_dict = {1: 'Styczeń', 2: 'Luty', 3: 'Marzec', 4: 'Kwiecień', 5: 'Maj', 6: 'Czerwiec', 7: 'Lipiec', 8: 'Sierpień', 9: 'Wrzesień', 10: 'Październik', 11: 'Listopad', 12: 'Grudzień'}
+    months_dict = {1: 'Styczeń', 2: 'Luty', 3: 'Marzec', 4: 'Kwiecień', 5: 'Maj', 6: 'Czerwiec', 7: 'Lipiec',
+                   8: 'Sierpień', 9: 'Wrzesień', 10: 'Październik', 11: 'Listopad', 12: 'Grudzień'}
     year_now = datetime.now().year
-    years_list = list(range(2011, (year_now + 1)))
+    month_now = datetime.now().month
+    years_list = reversed(list(range(2011, (year_now + 1))))
 
     context = {'years_list': years_list,
-               'months_dict': months_dict}
+               'months_dict': months_dict,
+               'month_now': month_now}
 
     return render(
         request=request,
