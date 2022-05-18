@@ -1,19 +1,12 @@
 {% extends 'admin/change_list.html' %}
 
 {% block object-tools %}
-<div>{{years_list}}</div>
-    <div>
-        <select id="year">
 
-            {% for y in years_list %}
-                <option value="{{ y }}">{{ y }}</option>
-            {% endfor %}
-
-        </select>
-        <form action="mortal/" method="POST">
-                <button type="submit">Go</button>
-        </form>
-    </div>
-    <br />
+<div>
+<form action="{% url 'select_date' %}">
+    <button type="submit">Dodaj wiersze</button>
+</form>
+</div>
+<br/>
     {{ block.super }}
 {% endblock %}

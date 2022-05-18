@@ -126,8 +126,8 @@ class DjangoSession(models.Model):
 
 class ZleceniaRaport(models.Model):
     id = models.CharField(db_column='id', max_length=36, primary_key=True, serialize=False, unique=True)
-    # field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True)
-    field_timestamp = models.CharField(db_column='_TIMESTAMP', blank=True, null=True, max_length=19)
+    field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True)
+    # field_timestamp = models.CharField(db_column='_TIMESTAMP', blank=True, null=True, max_length=19)
     nr_zlecenia = models.CharField(db_column='NR_ZLECENIA', blank=True, null=True, max_length=50)
     spedytor = models.CharField(db_column='SPEDYTOR', blank=True, null=True, max_length=50)
     opiekun = models.CharField(db_column='OPIEKUN', blank=True, null=True, max_length=50)
