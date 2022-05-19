@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
 from tools.insert import insert_into_database
 from datetime import datetime
 from django import template
@@ -48,3 +49,4 @@ def insert_into_db_view(request):
     month = request.GET['month_dropdown']
     year = request.GET['year_dropdown']
     insert_into_database(month, year)
+    return HttpResponseRedirect('/admin/raport_baza/zleceniaraport/')
