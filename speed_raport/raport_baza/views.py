@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from tools.insert import insert_into_database
 from datetime import datetime
@@ -7,8 +7,12 @@ from django import template
 # Create your views here.
 
 
-def index(request):
+def index2(request):
     return render(request, "index.html")
+
+
+def index(request):
+    return redirect('/admin/')
 
 
 def years_list(request):
