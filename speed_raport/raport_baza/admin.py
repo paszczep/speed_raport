@@ -1,10 +1,29 @@
 from django.contrib import admin
-from .models import ZleceniaRaport
-from django.shortcuts import render
-from datetime import datetime
+from .models import ZleceniaRaport, SpedytorzyPremie, SpedytorzyOsoby
+# from django.shortcuts import render
+# from datetime import datetime
 # Register your models here.
 
-#
+
+@admin.register(SpedytorzyPremie)
+class PremieAdmin(admin.ModelAdmin):
+    # ['id', 'add_date', 'id_zlecenia', 'id_spedytor', 'spedytor', 'kwota_premii', 'nr_zlecenia']
+    list_display = ['add_date', 'nr_zlecenia', 'spedytor', 'kwota_premii']
+    list_display_links = list_display
+    list_filter = ('spedytor', )
+    ordering = ('add_date', 'spedytor', 'kwota_premii',)
+    search_fields = ('spedytor',)
+    list_per_page = 10
+
+
+@admin.register(SpedytorzyOsoby)
+class OsobyAdmin(admin.ModelAdmin):
+    list_display = ['spedytor']
+    list_display_links = ['spedytor']
+    list_filter = ('spedytor',)
+    ordering = ('spedytor',)
+    search_fields = ('spedytor',)
+    list_per_page = 10
 
 
 # @admin.register(ZleceniaRaport)
@@ -20,9 +39,3 @@ class ZleceniaAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ZleceniaRaport, ZleceniaAdmin)
-
-# year_dropdown = []
-# for y in range(2011, (datetime.now().year + 5)):
-#     year_dropdown.append((y, y))
-
-
