@@ -168,26 +168,32 @@ class SpedytorzyOsoby(models.Model):
     # id = models.AutoField(primary_key=True)
     spedytor = models.CharField(blank=True, null=True, max_length=50)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
     class Meta:
         managed = True
         db_table = 'spedytorzy_osoby'
 
     def __str__(self):
-        return self.spedytor
+        return str(self.spedytor)
 
 
 class SpedytorzyPremie(models.Model):
     # id = models.AutoField(primary_key=True)
     add_date = models.DateTimeField(auto_now_add=True)
-    nr_zlecenia = models.ForeignKey(ZleceniaRaport, on_delete=models.RESTRICT, blank=True, null=True)
+    id_zlecenia = models.ForeignKey(ZleceniaRaport, on_delete=models.RESTRICT, blank=True, null=True)
     spedytor = models.ForeignKey(SpedytorzyOsoby, on_delete=models.RESTRICT, blank=True, null=True)
-    kwota_premii = models.DecimalField(max_digits=8, decimal_places=2)
+    kwota_premii = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
     class Meta:
         managed = True
         db_table = 'spedytorzy_premie'
 
     def __str__(self):
-        return self.spedytor
+        return str(self.spedytor)
 
 
