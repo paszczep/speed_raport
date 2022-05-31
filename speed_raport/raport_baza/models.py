@@ -5,7 +5,7 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
-from django.db import models
+from django.db import models, connection
 # from datetime import datetime
 # from speed_raport.tools.insert import insert_into_database
 
@@ -154,6 +154,18 @@ class ZleceniaRaport(models.Model):
     saldo_netto = models.CharField(db_column='SALDO_NETTO', blank=True, null=True, max_length=20)
 
     def save(self, *args, **kwargs):
+        with connection.cursor() as cursor:
+            cursor.execute(f"""SELECT * FROM zlecenia_raport WHERE id = '{self.id}'""")
+            row = cursor.fetchone()
+            columns = [column[0] for column in cursor.description]
+            # print(columns)
+            # print(row)
+            # cursor.execute(f"""INSERT INTO zlecenia_raport_historia SELECT * FROM zlecenia_raport WHERE id = '{self.id}'""")
+            columns_str = str(columns).replace('[', '(').replace(']', ')').replace("'id'", "id")
+            insert_string = f"""INSERT INTO "zlecenia_raport_historia" {columns_str} VALUES {row}"""
+            print(insert_string)
+            cursor.execute(insert_string)
+        # print('PRINTING SELF OMG', self)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -162,6 +174,15 @@ class ZleceniaRaport(models.Model):
     class Meta:
         managed = True
         db_table = 'zlecenia_raport'
+
+
+class ZleceniaRaportHistoria(ZleceniaRaport):
+    created = models.DateTimeField(auto_now_add=True, verbose_name='zapisany')
+
+    class Meta:
+        managed = True
+        # abstract = True
+        db_table = 'zlecenia_raport_historia'
 
 
 class SpedytorzyOsoby(models.Model):
