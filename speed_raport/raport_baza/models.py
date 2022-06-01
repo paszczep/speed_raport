@@ -124,11 +124,11 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
-class ZleceniaRaport(models.Model):
-    id = models.CharField(db_column='id', max_length=36, primary_key=True, serialize=False, unique=True)
+class Zlecenia(models.Model):
+    id = models.CharField(db_column='id', max_length=36, primary_key=True, serialize=False, unique=True, default=0)
     field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True, verbose_name='Czas dodania')
     # field_timestamp = models.CharField(db_column='_TIMESTAMP', blank=True, null=True, max_length=19)
-    nr_zlecenia = models.CharField(db_column='NR_ZLECENIA', max_length=50)
+    nr_zlecenia = models.CharField(db_column='NR_ZLECENIA', blank=True, null=True, max_length=50)
     spedytor = models.CharField(db_column='SPEDYTOR', blank=True, null=True, max_length=50)
     opiekun = models.CharField(db_column='OPIEKUN', blank=True, null=True, max_length=50)
     za_miejsce = models.CharField(db_column='ZA_MIEJSCE', blank=True, null=True, max_length=150, verbose_name='Miejsce załadunku')
@@ -153,6 +153,12 @@ class ZleceniaRaport(models.Model):
     noty_netto_pln = models.CharField(db_column='NOTY_NETTO_PLN', blank=True, null=True, max_length=20)
     saldo_netto = models.CharField(db_column='SALDO_NETTO', blank=True, null=True, max_length=20)
 
+    class Meta:
+        abstract = True
+
+
+class ZleceniaRaport(Zlecenia):
+
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
             cursor.execute(f"""SELECT * FROM zlecenia_raport WHERE id = '{self.id}'""")
@@ -161,9 +167,9 @@ class ZleceniaRaport(models.Model):
             # print(columns)
             # print(row)
             # cursor.execute(f"""INSERT INTO zlecenia_raport_historia SELECT * FROM zlecenia_raport WHERE id = '{self.id}'""")
-            columns_str = str(columns).replace('[', '(').replace(']', ')').replace("'id'", "id")
-            insert_string = f"""INSERT INTO "zlecenia_raport_historia" {columns_str} VALUES {row}"""
-            print(insert_string)
+            columns_str = str(columns).replace('[', '(').replace(']', ')').replace("'", "")
+            insert_string = f"""INSERT INTO zlecenia_raport_historia {columns_str} VALUES {row}"""
+            print('INSERT', insert_string)
             cursor.execute(insert_string)
         # print('PRINTING SELF OMG', self)
         super().save(*args, **kwargs)
@@ -172,17 +178,23 @@ class ZleceniaRaport(models.Model):
         return self.nr_zlecenia
 
     class Meta:
-        managed = True
+        # managed = True
         db_table = 'zlecenia_raport'
+        verbose_name = 'Zlecenie raport'
+        verbose_name_plural = 'Zlecenia raport'
 
 
-class ZleceniaRaportHistoria(ZleceniaRaport):
+class ZleceniaHistoria(Zlecenia):
     created = models.DateTimeField(auto_now_add=True, verbose_name='zapisany')
 
+    def __str__(self):
+        return self.nr_zlecenia
+
     class Meta:
-        managed = True
-        # abstract = True
+        # managed = True
         db_table = 'zlecenia_raport_historia'
+        verbose_name = 'Zlecenie historia'
+        verbose_name_plural = 'Zlecenia historia'
 
 
 class SpedytorzyOsoby(models.Model):
@@ -195,6 +207,8 @@ class SpedytorzyOsoby(models.Model):
     class Meta:
         managed = True
         db_table = 'spedytorzy_osoby'
+        verbose_name = 'Osoba'
+        verbose_name_plural = 'Osoby'
 
     def __str__(self):
         return str(self.spedytor)
@@ -203,8 +217,8 @@ class SpedytorzyOsoby(models.Model):
 class SpedytorzyPremie(models.Model):
     # id = models.AutoField(primary_key=True)
     add_date = models.DateTimeField(auto_now_add=True)
-    id_zlecenia = models.ForeignKey(ZleceniaRaport, on_delete=models.RESTRICT, blank=True, null=True)
-    spedytor = models.ForeignKey(SpedytorzyOsoby, on_delete=models.RESTRICT, blank=True, null=True)
+    id_zlecenia = models.ForeignKey(ZleceniaRaport, on_delete=models.CASCADE, blank=True, null=True)
+    spedytor = models.ForeignKey(SpedytorzyOsoby, on_delete=models.CASCADE, blank=True, null=True)
     kwota_premii = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -213,6 +227,8 @@ class SpedytorzyPremie(models.Model):
     class Meta:
         managed = True
         db_table = 'spedytorzy_premie'
+        verbose_name = 'Premia'
+        verbose_name_plural = 'Premie'
 
     def __str__(self):
         return str(self.spedytor)

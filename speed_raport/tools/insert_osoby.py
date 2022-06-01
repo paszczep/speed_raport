@@ -22,18 +22,20 @@ def get_output_engine():
     return engine
 
 
-conn_speed = pymssql.connect(
-    server='10.100.200.3',
-    port='1433',
-    user='pawel',
-    password='20Al3Mot@VP@weL22#',
-    database='SPEED',
-    charset='CP1250')
-cursor_speed = conn_speed.cursor()
+# conn_speed = pymssql.connect(
+#     server='10.100.200.3',
+#     port='1433',
+#     user='pawel',
+#     password='20Al3Mot@VP@weL22#',
+#     database='SPEED',
+#     charset='CP1250')
+# cursor_speed = conn_speed.cursor()
 
 spedytorzy_query = """
    SELECT [SPEDYTOR], [OPIEKUN] FROM [SPEED].[dbo].[ZLECENIA]
 """
+
+cursor_speed = get_input_cursor()
 
 spedytorzy_df = dataframe_from_query(cursor_speed, spedytorzy_query)
 
