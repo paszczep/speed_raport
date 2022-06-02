@@ -175,7 +175,7 @@ class ZleceniaRaport(Zlecenia):
         archive_df = pd.read_sql_query(archive_query, con=engine)
         new_archive_df = pd.concat([raport_df, archive_df])
         # Patrzę czy nie ma duplikatu zapisywanego rekordu w archiwum
-        duplicates_cols = [el for el in new_archive_df.columns if el not in ['_TIMESTAMP', 'id']]
+        duplicates_cols = [el for el in new_archive_df.columns if el not in ['_TIMESTAMP', 'id', 'created']]
         new_archive_df.drop_duplicates(subset=duplicates_cols, keep=False, ignore_index=True, inplace=True)
         # Eliminuję wszystkie elementy które już są w archiwum
         existing_ids_list = archive_df['id'].to_list()
