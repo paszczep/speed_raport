@@ -33,21 +33,25 @@ class ZleceniaAdmin(admin.ModelAdmin):
     # list_editable = ['spedytor', 'opiekun', 'za_miejsce', 'za_data', 'wy_data', 'wy_miejsce', 'wy_miasto', 'wy_kraj', 'wy_kod', 'za_miasto', 'za_kraj', 'za_kod', 'trasa', 'opis', 'informacje', 'data_wystawienia_koszt', 'data_platnosci_koszt', 'data_wystawienia_przych', 'data_platnosci_przych', 'netto_pln_przych', 'netto_pln_koszt', 'noty_netto_pln', 'saldo_netto']
     list_filter = ('field_timestamp', 'spedytor', 'opiekun', 'opis', 'za_data')
     ordering = ('field_timestamp', 'nr_zlecenia',)
-    readonly_fields = ('id', 'field_timestamp', )
-    search_fields = ('id', 'nr_zlecenia', 'spedytor', 'opiekun', )
+    search_fields = (
+        # '_id',
+        'nr_zlecenia', 'spedytor', 'opiekun', )
     list_per_page = 5
     # change_list_template = "zlecenia_changelist.html"
 
 
 class ZleceniaRaportAdmin(ZleceniaAdmin):
+    readonly_fields = (
+        # '_id',
+        'field_timestamp', )
     list_display_links = ['nr_zlecenia']
     change_list_template = "zlecenia_changelist.html"
 
 
-
-
 class ZleceniaHistoriaAdmin(ZleceniaAdmin):
+
     readonly_fields = ['field_timestamp', 'nr_zlecenia', 'spedytor', 'opiekun', 'za_miejsce', 'za_data', 'wy_data', 'wy_miejsce', 'wy_miasto', 'wy_kraj', 'wy_kod', 'za_miasto', 'za_kraj', 'za_kod', 'trasa', 'opis', 'informacje', 'data_wystawienia_koszt', 'data_platnosci_koszt', 'data_wystawienia_przych', 'data_platnosci_przych', 'netto_pln_przych', 'netto_pln_koszt', 'noty_netto_pln', 'saldo_netto']
+    list_display = ['created'] + readonly_fields
 
     class Meta:
         verbose_name = 'Zlecenie historia'

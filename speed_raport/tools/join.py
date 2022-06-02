@@ -113,15 +113,17 @@ def get_raport_df(month, year):
     zlec_df['INFORMACJE'] = ''
     zlec_df['id'] = zlec_df.apply(lambda _: uuid.uuid4(), axis=1)
     # print(zlec_df.columns)
-    relevant_zlec_cols = ['id', '_TIMESTAMP', 'NR_ZLECENIA',
-                          'SPEDYTOR', 'OPIEKUN', 'ZA_MIEJSCE',
-                          'ZA_DATA', 'WY_DATA',
-                          'WY_MIEJSCE', 'WY_MIASTO', 'WY_KRAJ', 'WY_KOD',
-                          'ZA_MIASTO', 'ZA_KRAJ', 'ZA_KOD', 'TRASA',
-                          'OPIS', 'INFORMACJE',
-                          'DATA_WYSTAWIENIA_KOSZT', 'DATA_PLATNOSCI_KOSZT',
-                          'DATA_WYSTAWIENIA_PRZYCH', 'DATA_PLATNOSCI_PRZYCH',
-                          'NETTO_PLN_PRZYCH', 'NETTO_PLN_KOSZT', 'NOTY_NETTO_PLN', 'SALDO_NETTO']
+    relevant_zlec_cols = [
+        'id',
+        '_TIMESTAMP', 'NR_ZLECENIA',
+        'SPEDYTOR', 'OPIEKUN', 'ZA_MIEJSCE',
+        'ZA_DATA', 'WY_DATA',
+        'WY_MIEJSCE', 'WY_MIASTO', 'WY_KRAJ', 'WY_KOD',
+        'ZA_MIASTO', 'ZA_KRAJ', 'ZA_KOD', 'TRASA',
+        'OPIS', 'INFORMACJE',
+        'DATA_WYSTAWIENIA_KOSZT', 'DATA_PLATNOSCI_KOSZT',
+        'DATA_WYSTAWIENIA_PRZYCH', 'DATA_PLATNOSCI_PRZYCH',
+        'NETTO_PLN_PRZYCH', 'NETTO_PLN_KOSZT', 'NOTY_NETTO_PLN', 'SALDO_NETTO']
 
     data_cols = [col for col in relevant_zlec_cols if 'DATA' in col]
     for col in data_cols:

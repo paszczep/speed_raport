@@ -6,6 +6,10 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models, connection
+import pandas as pd
+from tools.connect import get_raport_baza_engine
+import uuid
+from datetime import datetime
 # from datetime import datetime
 # from speed_raport.tools.insert import insert_into_database
 
@@ -125,8 +129,8 @@ class DjangoSession(models.Model):
 
 
 class Zlecenia(models.Model):
-    id = models.CharField(db_column='id', max_length=36, primary_key=True, serialize=False, unique=True, default=0)
-    field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True, verbose_name='Czas dodania')
+    id = models.CharField(db_column='id', max_length=36, primary_key=True, default=0)
+    field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True, verbose_name='DODANY')
     # field_timestamp = models.CharField(db_column='_TIMESTAMP', blank=True, null=True, max_length=19)
     nr_zlecenia = models.CharField(db_column='NR_ZLECENIA', blank=True, null=True, max_length=50)
     spedytor = models.CharField(db_column='SPEDYTOR', blank=True, null=True, max_length=50)
@@ -158,48 +162,76 @@ class Zlecenia(models.Model):
 
 
 class ZleceniaRaport(Zlecenia):
+    # id = models.AutoField(primary_key=True)
+    # id = models.AutoField(primary_key=True, db_column='id')
+    # _
 
     def save(self, *args, **kwargs):
-        with connection.cursor() as cursor:
-            cursor.execute(f"""SELECT * FROM zlecenia_raport WHERE id = '{self.id}'""")
-            row = cursor.fetchone()
-            columns = [column[0] for column in cursor.description]
-            # print(columns)
-            # print(row)
-            # cursor.execute(f"""INSERT INTO zlecenia_raport_historia SELECT * FROM zlecenia_raport WHERE id = '{self.id}'""")
-            columns_str = str(columns).replace('[', '(').replace(']', ')').replace("'", "")
-            insert_string = f"""INSERT INTO zlecenia_raport_historia {columns_str} VALUES {row}"""
-            print('INSERT', insert_string)
-            cursor.execute(insert_string)
-        # print('PRINTING SELF OMG', self)
+
+        engine = get_raport_baza_engine()
+        raport_query = f"""SELECT * FROM "zlecenia_raport" WHERE "NR_ZLECENIA" = '{self.nr_zlecenia}'"""
+        raport_df = pd.read_sql_query(raport_query, con=engine)
+        archive_query = f"""SELECT * FROM "zlecenia_historia" WHERE "NR_ZLECENIA" = '{self.nr_zlecenia}'"""
+        archive_df = pd.read_sql_query(archive_query, con=engine)
+        new_archive_df = pd.concat([raport_df, archive_df])
+        # Patrzę czy nie ma duplikatu zapisywanego rekordu w archiwum
+        duplicates_cols = [el for el in new_archive_df.columns if el not in ['_TIMESTAMP', 'id']]
+        new_archive_df.drop_duplicates(subset=duplicates_cols, keep=False, ignore_index=True, inplace=True)
+        # Eliminuję wszystkie elementy które już są w archiwum
+        existing_ids_list = archive_df['id'].to_list()
+        new_archive_df = new_archive_df.loc[~(new_archive_df['id'].isin(existing_ids_list))]
+        new_archive_df['created'] = datetime.now()
+        new_archive_df['id'] = new_archive_df.apply(lambda _: uuid.uuid4(), axis=1)
+
+        schema_name = 'public'
+        table_name = 'zlecenia_historia'
+        if len(new_archive_df) > 0:
+            new_archive_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
+
+        # with connection.cursor() as cursor:
+        #     existing_df = pd.read_sql_query('select * from "zlecenia_raport"', con=engine).astype(str)
+        #     cursor.execute(f"""SELECT * FROM zlecenia_raport WHERE id = '{self.id}'""")
+        #     row = cursor.fetchone()
+        #     columns = [column[0] for column in cursor.description]
+        #     print(columns, row, sep='\n')
+        #     # print()
+        #     # cursor.execute(f"""INSERT INTO zlecenia_raport_historia SELECT * FROM zlecenia_raport WHERE id = '{self.id}'""")
+        #     columns_str = str(columns).replace('[', '(').replace(']', ')').replace("'", "")
+        #     insert_string = f"""INSERT INTO zlecenia_raport_historia {columns_str} VALUES {row}"""
+        #     print('INSERT', [insert_string])
+        #     cursor.execute(insert_string)
+        # # print('PRINTING SELF OMG', self)
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.nr_zlecenia
 
     class Meta:
-        # managed = True
+        managed = True
         db_table = 'zlecenia_raport'
         verbose_name = 'Zlecenie raport'
         verbose_name_plural = 'Zlecenia raport'
 
 
 class ZleceniaHistoria(Zlecenia):
-    created = models.DateTimeField(auto_now_add=True, verbose_name='zapisany')
+    # id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='ZAPISANY')
+    # raport_id = models.CharField(db_column='_id', blank=True, null=True, max_length=36,)
 
     def __str__(self):
         return self.nr_zlecenia
 
     class Meta:
-        # managed = True
-        db_table = 'zlecenia_raport_historia'
+        managed = True
+        db_table = 'zlecenia_historia'
         verbose_name = 'Zlecenie historia'
         verbose_name_plural = 'Zlecenia historia'
 
 
 class SpedytorzyOsoby(models.Model):
-    # id = models.AutoField(primary_key=True)
-    spedytor = models.CharField(blank=True, null=True, max_length=50)
+    #
+    spedytor = models.CharField(blank=True, null=True, max_length=50, verbose_name='Spedytor')
+    premia_procent = models.SmallIntegerField(default=0, verbose_name='Procent premii')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

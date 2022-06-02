@@ -54,5 +54,5 @@ OUT_DB = {
 
 schema_name = 'public'
 table_name = 'spedytorzy_osoby'
-engine = get_output_engine()
+engine = get_raport_baza_engine()
 unique_sped_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
