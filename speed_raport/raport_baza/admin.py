@@ -43,7 +43,9 @@ class ZleceniaAdmin(admin.ModelAdmin):
 class ZleceniaRaportAdmin(ZleceniaAdmin):
     readonly_fields = (
         # '_id',
-        'field_timestamp', )
+        'field_timestamp',
+        'nr_zlecenia'
+    )
     list_display_links = ['nr_zlecenia']
     change_list_template = "zlecenia_changelist.html"
 

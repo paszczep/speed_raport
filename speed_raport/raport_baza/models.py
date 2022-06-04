@@ -152,10 +152,15 @@ class Zlecenia(models.Model):
     data_platnosci_koszt = models.CharField(db_column='DATA_PLATNOSCI_KOSZT', blank=True, null=True, max_length=10)
     data_wystawienia_przych = models.CharField(db_column='DATA_WYSTAWIENIA_PRZYCH', blank=True, null=True, max_length=10)
     data_platnosci_przych = models.CharField(db_column='DATA_PLATNOSCI_PRZYCH', blank=True, null=True, max_length=10)
-    netto_pln_przych = models.CharField(db_column='NETTO_PLN_PRZYCH', blank=True, null=True, max_length=20)
-    netto_pln_koszt = models.CharField(db_column='NETTO_PLN_KOSZT', blank=True, null=True, max_length=20)
-    noty_netto_pln = models.CharField(db_column='NOTY_NETTO_PLN', blank=True, null=True, max_length=20)
-    saldo_netto = models.CharField(db_column='SALDO_NETTO', blank=True, null=True, max_length=20)
+
+    netto_pln_przych = models.DecimalField(db_column='NETTO_PLN_PRZYCH', max_digits=8, decimal_places=2, blank=True, null=True)
+    netto_pln_koszt = models.DecimalField(db_column='NETTO_PLN_KOSZT', max_digits=8, decimal_places=2, blank=True, null=True)
+    noty_netto_pln = models.DecimalField(db_column='NOTY_NETTO_PLN', max_digits=8, decimal_places=2, blank=True, null=True)
+    saldo_netto = models.DecimalField(db_column='SALDO_NETTO', max_digits=8, decimal_places=2, blank=True, null=True)
+    # netto_pln_przych = models.CharField(db_column='NETTO_PLN_PRZYCH', blank=True, null=True, max_length=20)
+    # netto_pln_koszt = models.CharField(db_column='NETTO_PLN_KOSZT', blank=True, null=True, max_length=20)
+    # noty_netto_pln = models.CharField(db_column='NOTY_NETTO_PLN', blank=True, null=True, max_length=20)
+    # saldo_netto = models.CharField(db_column='SALDO_NETTO', blank=True, null=True, max_length=20)
 
     class Meta:
         abstract = True
@@ -164,10 +169,23 @@ class Zlecenia(models.Model):
 class ZleceniaRaport(Zlecenia):
     # id = models.AutoField(primary_key=True)
     # id = models.AutoField(primary_key=True, db_column='id')
-    # _
+
+    def create_premie(self):
+        engine = get_raport_baza_engine()
+        osoby = str({self.spedytor, self.opiekun}).replace('{', '(').replace('}', ')')
+        osoby_query = f"""SELECT * FROM "spedytorzy_osoby" WHERE "Osoba" IN {osoby}"""
+        osoby_df = pd.read_sql_query(osoby_query, con=engine)
+        print(osoby_df)
+        # spedytor = self.spedytor
+        # opiekun = self.opiekun
+        # saldo_netto = self.saldo_netto
+        # procent = int(1)
+        # premia = saldo_netto * procent
+        #
+        # if spedytor == opiekun:
+        #     pass
 
     def save(self, *args, **kwargs):
-
         engine = get_raport_baza_engine()
         raport_query = f"""SELECT * FROM "zlecenia_raport" WHERE "NR_ZLECENIA" = '{self.nr_zlecenia}'"""
         raport_df = pd.read_sql_query(raport_query, con=engine)
@@ -188,19 +206,6 @@ class ZleceniaRaport(Zlecenia):
         if len(new_archive_df) > 0:
             new_archive_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
 
-        # with connection.cursor() as cursor:
-        #     existing_df = pd.read_sql_query('select * from "zlecenia_raport"', con=engine).astype(str)
-        #     cursor.execute(f"""SELECT * FROM zlecenia_raport WHERE id = '{self.id}'""")
-        #     row = cursor.fetchone()
-        #     columns = [column[0] for column in cursor.description]
-        #     print(columns, row, sep='\n')
-        #     # print()
-        #     # cursor.execute(f"""INSERT INTO zlecenia_raport_historia SELECT * FROM zlecenia_raport WHERE id = '{self.id}'""")
-        #     columns_str = str(columns).replace('[', '(').replace(']', ')').replace("'", "")
-        #     insert_string = f"""INSERT INTO zlecenia_raport_historia {columns_str} VALUES {row}"""
-        #     print('INSERT', [insert_string])
-        #     cursor.execute(insert_string)
-        # # print('PRINTING SELF OMG', self)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -229,8 +234,7 @@ class ZleceniaHistoria(Zlecenia):
 
 
 class SpedytorzyOsoby(models.Model):
-    #
-    spedytor = models.CharField(blank=True, null=True, max_length=50, verbose_name='Spedytor')
+    osoba = models.CharField(blank=True, null=True, max_length=50, verbose_name='Osoba')
     premia_procent = models.SmallIntegerField(default=0, verbose_name='Procent premii')
 
     def save(self, *args, **kwargs):
@@ -243,7 +247,7 @@ class SpedytorzyOsoby(models.Model):
         verbose_name_plural = 'Osoby'
 
     def __str__(self):
-        return str(self.spedytor)
+        return str(self.osoba)
 
 
 class SpedytorzyPremie(models.Model):

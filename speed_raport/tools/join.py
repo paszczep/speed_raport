@@ -100,12 +100,6 @@ def get_raport_df(month, year):
     for col in datetime_cols:
         zlec_df[col] = pd.to_datetime(zlec_df[col]).dt.date
 
-    # for row in zlec_df.iteritems():
-    #     print(row['ZA_DATA'], row['ZA_DATA_RZ'])
-
-    # zlec_df.loc[zlec_df['ZA_DATA_RZ'] != '', 'ZA_DATA'] = zlec_df.loc[zlec_df['ZA_DATA_RZ'] != '', 'ZA_DATA_RZ']
-    # zlec_df.loc[zlec_df['WY_DATA_RZ'] != '', 'WY_DATA'] = zlec_df.loc[zlec_df['WY_DATA_RZ'] != '', 'WY_DATA_RZ']
-
     zlec_df[['ZA_DATA']].update(zlec_df[['ZA_DATA_RZ']])
     zlec_df[['WY_DATA']].update(zlec_df[['WY_DATA_RZ']])
     # zlec_df['_TIMESTAMP'] = datetime.now(pytz.timezone('Europe/Warsaw'))
