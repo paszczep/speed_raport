@@ -170,20 +170,20 @@ class ZleceniaRaport(Zlecenia):
     # id = models.AutoField(primary_key=True)
     # id = models.AutoField(primary_key=True, db_column='id')
 
-    def create_premie(self):
-        engine = get_raport_baza_engine()
-        osoby = str({self.spedytor, self.opiekun}).replace('{', '(').replace('}', ')')
-        osoby_query = f"""SELECT * FROM "spedytorzy_osoby" WHERE "Osoba" IN {osoby}"""
-        osoby_df = pd.read_sql_query(osoby_query, con=engine)
-        print(osoby_df)
-        # spedytor = self.spedytor
-        # opiekun = self.opiekun
-        # saldo_netto = self.saldo_netto
-        # procent = int(1)
-        # premia = saldo_netto * procent
-        #
-        # if spedytor == opiekun:
-        #     pass
+    # def create_premie(self):
+    #     engine = get_raport_baza_engine()
+    #     osoby = str({self.spedytor, self.opiekun}).replace('{', '(').replace('}', ')')
+    #     osoby_query = f"""SELECT * FROM "spedytorzy_osoby" WHERE "Osoba" IN {osoby}"""
+    #     osoby_df = pd.read_sql_query(osoby_query, con=engine)
+    #     print(osoby_df)
+    #     spedytor = self.spedytor
+    #     opiekun = self.opiekun
+    #     saldo_netto = self.saldo_netto
+    #     procent = int(1)
+    #     premia = saldo_netto * procent
+    #
+    #     if spedytor == opiekun:
+    #         pass
 
     def save(self, *args, **kwargs):
         engine = get_raport_baza_engine()
@@ -252,8 +252,8 @@ class SpedytorzyOsoby(models.Model):
 
 class SpedytorzyPremie(models.Model):
     # id = models.AutoField(primary_key=True)
-    add_date = models.DateTimeField(auto_now_add=True)
-    id_zlecenia = models.ForeignKey(ZleceniaRaport, on_delete=models.CASCADE, blank=True, null=True)
+    add_date = models.DateTimeField(auto_now_add=True, verbose_name='Data dodania')
+    zlecenie = models.ForeignKey(ZleceniaRaport, on_delete=models.CASCADE, blank=True, null=True)
     spedytor = models.ForeignKey(SpedytorzyOsoby, on_delete=models.CASCADE, blank=True, null=True)
     kwota_premii = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
 

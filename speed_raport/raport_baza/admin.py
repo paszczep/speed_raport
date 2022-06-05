@@ -8,23 +8,24 @@ from .models import ZleceniaRaport, SpedytorzyPremie, SpedytorzyOsoby, ZleceniaH
 @admin.register(SpedytorzyPremie)
 class PremieAdmin(admin.ModelAdmin):
     # ['id', 'add_date', 'id_zlecenia', 'id_spedytor', 'spedytor', 'kwota_premii', 'nr_zlecenia']
-    list_display = ['add_date', 'id_zlecenia', 'spedytor', 'kwota_premii']
+    list_display = ['add_date', 'zlecenie', 'spedytor', 'kwota_premii']
     list_display_links = list_display
     list_filter = ('spedytor', )
     ordering = ('add_date', 'spedytor', 'kwota_premii',)
-    search_fields = ('spedytor', 'id_zlecenia')
-    raw_id_fields = ('id_zlecenia',)
+    search_fields = ('spedytor', 'zlecenie')
+    raw_id_fields = ('zlecenie',)
     list_per_page = 10
 
 
 @admin.register(SpedytorzyOsoby)
 class OsobyAdmin(admin.ModelAdmin):
-    list_display = ['spedytor']
-    list_display_links = ['spedytor']
-    list_filter = ('spedytor',)
-    ordering = ('spedytor',)
-    search_fields = ('spedytor',)
+    list_display = ['osoba', 'premia_procent']
+    list_display_links = ['osoba']
+    list_filter = ('osoba',)
+    ordering = ('osoba', 'premia_procent')
+    search_fields = ('osoba',)
     list_per_page = 50
+    change_list_template = 'osoby_changelist.html'
 
 
 # @admin.register(ZleceniaRaport)

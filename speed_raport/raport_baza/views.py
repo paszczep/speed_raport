@@ -1,17 +1,29 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from tools.insert import insert_into_database
+from tools.insert_osoby import update_osoby
+from tools.premie import create_premie
 from datetime import datetime
 from django import template
 
 # Create your views here.
 
 
+def upadate_osoby(request):
+    update_osoby()
+    return HttpResponseRedirect('/admin/raport_baza/spedytorzyosoby/')
+
+
+def calculate_premie(request):
+    create_premie()
+    return HttpResponseRedirect('/admin/raport_baza/zleceniaraport/')
+
+
 def index2(request):
     return render(request, "index.html")
 
 
-def index(request):
+def index():
     return redirect('/admin/')
 
 
