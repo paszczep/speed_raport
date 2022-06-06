@@ -3,10 +3,16 @@ from django.http import HttpResponse, HttpResponseRedirect
 from tools.insert import insert_into_database
 from tools.insert_osoby import update_osoby
 from tools.premie import create_premie
+from raport_baza.models import SpedytorzyPremie
 from datetime import datetime
 from django import template
 
 # Create your views here.
+
+
+def drop_parallel_premie():
+    objects = SpedytorzyPremie.objects.get()
+    HttpResponseRedirect('/admin/raport_baza/spedytorzypremie/')
 
 
 def upadate_osoby(request):
@@ -19,17 +25,12 @@ def calculate_premie(request):
     return HttpResponseRedirect('/admin/raport_baza/zleceniaraport/')
 
 
-def index2(request):
+def index_redundant(request):
     return render(request, "index.html")
 
 
 def index():
     return redirect('/admin/')
-
-
-def years_list(request):
-    years_list = _list_of_years = list(range(2019, datetime.now().year + 1))
-    return render(request, template_name="zlecenia_changelist.html", context={'years_list': years_list})
 
 
 def select_month_and_year_view(request):
@@ -38,7 +39,7 @@ def select_month_and_year_view(request):
                    8: 'Sierpień', 9: 'Wrzesień', 10: 'Październik', 11: 'Listopad', 12: 'Grudzień'}
     year_now = datetime.now().year
     month_now = datetime.now().month
-    years_list = reversed(list(range(2011, (year_now + 1))))
+    years_list = reversed(list(range(2019, (year_now + 1))))
 
     context = {'years_list': years_list,
                'months_dict': months_dict,

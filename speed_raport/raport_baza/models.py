@@ -211,6 +211,9 @@ class ZleceniaRaport(Zlecenia):
     def __str__(self):
         return self.nr_zlecenia
 
+    def __repr__(self):
+        return self.id
+
     class Meta:
         managed = True
         db_table = 'zlecenia_raport'
@@ -224,7 +227,8 @@ class ZleceniaHistoria(Zlecenia):
     # raport_id = models.CharField(db_column='_id', blank=True, null=True, max_length=36,)
 
     def __str__(self):
-        return self.nr_zlecenia
+        return self.id
+        # return self.nr_zlecenia
 
     class Meta:
         managed = True
@@ -234,6 +238,7 @@ class ZleceniaHistoria(Zlecenia):
 
 
 class SpedytorzyOsoby(models.Model):
+    id = models.AutoField(primary_key=True)
     osoba = models.CharField(blank=True, null=True, max_length=50, verbose_name='Osoba')
     premia_procent = models.SmallIntegerField(default=0, verbose_name='Procent premii')
 
@@ -247,20 +252,34 @@ class SpedytorzyOsoby(models.Model):
         verbose_name_plural = 'Osoby'
 
     def __str__(self):
+        # return str(self.id)
         return str(self.osoba)
+
+    # def __repr__(self):
+    #     return self.id
 
 
 class SpedytorzyPremie(models.Model):
     # id = models.AutoField(primary_key=True)
     add_date = models.DateTimeField(auto_now_add=True, verbose_name='Data dodania')
-    zlecenie = models.ForeignKey(ZleceniaRaport, on_delete=models.CASCADE, blank=True, null=True)
-    spedytor = models.ForeignKey(SpedytorzyOsoby, on_delete=models.CASCADE, blank=True, null=True)
-    kwota_premii = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    zlecenie = models.ForeignKey(ZleceniaRaport, on_delete=models.CASCADE, blank=True, null=True, db_column='zlecenie_id', verbose_name='Zlecenie')
+    spedytor = models.ForeignKey(SpedytorzyOsoby, on_delete=models.CASCADE, blank=True, null=True, db_column='spedytor_id', verbose_name='Osoba')
+    kwota_premii = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, verbose_name='Kwota')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, using=None, keep_parents=False, *args, **kwargs):
+        # engine = get_raport_baza_engine()
+        # zlec_id = self.zlecenie
+        # osoba_id = self.spedytor
+        # select_query = f"""
+        # SELECT * FROM "spedytorzy_premie"
+        # WHERE zlecenie_id = '{zlec_id}' AND spedytor_id != {osoba_id};"""
+        # print('HEJ', select_query)
+        # premie_df = pd.read_sql_query(select_query, con=engine)
+        # print('HOPSA', premie_df)
+
         super().delete(*args, **kwargs)
 
     class Meta:
@@ -270,6 +289,7 @@ class SpedytorzyPremie(models.Model):
         verbose_name_plural = 'Premie'
 
     def __str__(self):
-        return str(self.spedytor)
+        return str(self.zlecenie)
+            # , str(self.spedytor)
 
 

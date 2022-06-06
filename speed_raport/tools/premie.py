@@ -14,19 +14,19 @@ def get_zlecenia(existing_ids_list):
         WHERE id NOT IN {existing_ids_str}"""
 
     zlecenia_df = pd.read_sql_query(zlecenia_query, con=engine)
-    print(zlecenia_df)
+    # print(zlecenia_df)
     # [['id', 'SPEDYTOR', 'OPIEKUN', 'SALDO_NETTO']]
     return zlecenia_df
 
 
 def create_premie():
-    existing_premie_query = """SELECT zlecenie_id FROM "spedytorzy_premie"; """
+    existing_premie_query = """SELECT zlecenie_id FROM "spedytorzy_premie";"""
     existing__premie_zlec_ids = pd.read_sql_query(existing_premie_query, con=engine)
     existing_zlec_ids_list = existing__premie_zlec_ids['zlecenie_id'].to_list()
 
     zlecenia_df = get_zlecenia(existing_zlec_ids_list)
 
-    osoby_query = 'SELECT * FROM "spedytorzy_osoby"'
+    osoby_query = 'SELECT * FROM "spedytorzy_osoby";'
     osoby_procenty = pd.read_sql_query(osoby_query, con=engine)
 
     created = datetime.now()
