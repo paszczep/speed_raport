@@ -260,6 +260,9 @@ class SpedytorzyPremie(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+
     class Meta:
         managed = True
         db_table = 'spedytorzy_premie'
