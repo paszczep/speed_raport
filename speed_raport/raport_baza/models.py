@@ -6,10 +6,13 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models, connection
+from django.http import HttpResponse
 import pandas as pd
 from tools.connect import get_raport_baza_engine
 import uuid
 from datetime import datetime
+from django.shortcuts import render, redirect
+
 # from datetime import datetime
 # from speed_raport.tools.insert import insert_into_database
 
@@ -211,8 +214,8 @@ class ZleceniaRaport(Zlecenia):
     def __str__(self):
         return self.nr_zlecenia
 
-    def __repr__(self):
-        return self.id
+    # def __repr__(self):
+    #     return self.id
 
     class Meta:
         managed = True
@@ -266,12 +269,23 @@ class SpedytorzyPremie(models.Model):
     spedytor = models.ForeignKey(SpedytorzyOsoby, on_delete=models.CASCADE, blank=True, null=True, db_column='spedytor_id', verbose_name='Osoba')
     kwota_premii = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, verbose_name='Kwota')
 
+    objects = models.Manager()
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False, *args, **kwargs):
         # engine = get_raport_baza_engine()
-        # zlec_id = self.zlecenie
+        zlec_id = self.zlecenie
+        osoba_id = self.spedytor
+        SpedytorzyPremie.objects.get()
+        print('DELETE', zlec_id)
+        HttpResponse(f'delete/premie/{zlec_id}/')
+
+        def my_latest_song(self, user_id):
+            song = SpedytorzyPremie.objects.filter(genre_id=self.id, author=User.objects.get(pk=user_id)).order_by('date')
+            return song[0]
+
         # osoba_id = self.spedytor
         # select_query = f"""
         # SELECT * FROM "spedytorzy_premie"

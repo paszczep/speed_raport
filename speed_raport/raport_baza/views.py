@@ -10,8 +10,10 @@ from django import template
 # Create your views here.
 
 
-def drop_parallel_premie():
-    objects = SpedytorzyPremie.objects.get()
+def drop_parallel_premie(zlecenie_id='99bf2ada-2b97-42f4-8e4c-d0d85585e6db'):
+    print('click!')
+    objects = SpedytorzyPremie.objects.get(zlecenie_id=zlecenie_id)
+    print(objects)
     HttpResponseRedirect('/admin/raport_baza/spedytorzypremie/')
 
 
