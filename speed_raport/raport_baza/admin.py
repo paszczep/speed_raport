@@ -9,11 +9,11 @@ from .models import ZleceniaRaport, SpedytorzyPremie, SpedytorzyOsoby, ZleceniaH
 class PremieAdmin(admin.ModelAdmin):
     # ['id', 'add_date', 'id_zlecenia', 'id_spedytor', 'spedytor', 'kwota_premii', 'nr_zlecenia']
     list_display = ['add_date', 'zlecenie', 'spedytor', 'kwota_premii']
-    list_display_links = list_display
+    list_display_links = ['add_date', 'zlecenie', 'spedytor']
     list_filter = ('spedytor', )
-    ordering = ('add_date', 'spedytor', 'kwota_premii',)
+    ordering = list_display
     search_fields = ('spedytor', 'zlecenie')
-    raw_id_fields = ('zlecenie',)
+    # raw_id_fields = ('zlecenie',)
     list_per_page = 10
 
 

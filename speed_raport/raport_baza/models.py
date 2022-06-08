@@ -276,15 +276,17 @@ class SpedytorzyPremie(models.Model):
 
     def delete(self, using=None, keep_parents=False, *args, **kwargs):
         # engine = get_raport_baza_engine()
-        zlec_id = self.zlecenie
-        osoba_id = self.spedytor
-        SpedytorzyPremie.objects.get()
-        print('DELETE', zlec_id)
-        HttpResponse(f'delete/premie/{zlec_id}/')
-
-        def my_latest_song(self, user_id):
-            song = SpedytorzyPremie.objects.filter(genre_id=self.id, author=User.objects.get(pk=user_id)).order_by('date')
-            return song[0]
+        # zlec_id = self.zlecenie
+        # osoba_id = self.spedytor
+        parallel_records = SpedytorzyPremie.objects.filter(zlecenie=self.zlecenie)
+        for record in parallel_records:
+            record.delete()
+        # print('DELETE', zlec_id)
+        # HttpResponse(f'delete/premie/{zlec_id}/')
+        #
+        # def my_latest_song(self, user_id):
+        #     song = SpedytorzyPremie.objects.filter(genre_id=self.id, author=User.objects.get(pk=user_id)).order_by('date')
+        #     return song[0]
 
         # osoba_id = self.spedytor
         # select_query = f"""
@@ -305,5 +307,3 @@ class SpedytorzyPremie(models.Model):
     def __str__(self):
         return str(self.zlecenie)
             # , str(self.spedytor)
-
-
