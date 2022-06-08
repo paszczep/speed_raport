@@ -3,32 +3,24 @@ from django.http import HttpResponse, HttpResponseRedirect
 from tools.insert import insert_into_database
 from tools.insert_osoby import update_osoby
 from tools.premie import create_premie
-from raport_baza.models import SpedytorzyPremie
 from datetime import datetime
 from django import template
 
 # Create your views here.
 
 
-def drop_parallel_premie(zlecenie_id='99bf2ada-2b97-42f4-8e4c-d0d85585e6db'):
-    print('click!')
-    objects = SpedytorzyPremie.objects.get(zlecenie_id=zlecenie_id)
-    print(objects)
-    HttpResponseRedirect('/admin/raport_baza/spedytorzypremie/')
-
-
-def upadate_osoby(request):
+def upadate_osoby():
     update_osoby()
     return HttpResponseRedirect('/admin/raport_baza/spedytorzyosoby/')
 
 
-def calculate_premie(request):
+def calculate_premie():
     create_premie()
     return HttpResponseRedirect('/admin/raport_baza/zleceniaraport/')
 
 
-def index_redundant(request):
-    return render(request, "index.html")
+# def index_redundant(request):
+#     return render(request, "index.html")
 
 
 def index():

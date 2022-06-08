@@ -12,7 +12,7 @@ class PremieAdmin(admin.ModelAdmin):
     list_display_links = ['add_date', 'zlecenie', 'spedytor']
     list_filter = ('spedytor', )
     ordering = list_display
-    search_fields = ('spedytor', 'zlecenie')
+    search_fields = ('spedytor__osoba', 'zlecenie__nr_zlecenia')
     # raw_id_fields = ('zlecenie',)
     list_per_page = 10
 

@@ -160,33 +160,12 @@ class Zlecenia(models.Model):
     netto_pln_koszt = models.DecimalField(db_column='NETTO_PLN_KOSZT', max_digits=8, decimal_places=2, blank=True, null=True)
     noty_netto_pln = models.DecimalField(db_column='NOTY_NETTO_PLN', max_digits=8, decimal_places=2, blank=True, null=True)
     saldo_netto = models.DecimalField(db_column='SALDO_NETTO', max_digits=8, decimal_places=2, blank=True, null=True)
-    # netto_pln_przych = models.CharField(db_column='NETTO_PLN_PRZYCH', blank=True, null=True, max_length=20)
-    # netto_pln_koszt = models.CharField(db_column='NETTO_PLN_KOSZT', blank=True, null=True, max_length=20)
-    # noty_netto_pln = models.CharField(db_column='NOTY_NETTO_PLN', blank=True, null=True, max_length=20)
-    # saldo_netto = models.CharField(db_column='SALDO_NETTO', blank=True, null=True, max_length=20)
 
     class Meta:
         abstract = True
 
 
 class ZleceniaRaport(Zlecenia):
-    # id = models.AutoField(primary_key=True)
-    # id = models.AutoField(primary_key=True, db_column='id')
-
-    # def create_premie(self):
-    #     engine = get_raport_baza_engine()
-    #     osoby = str({self.spedytor, self.opiekun}).replace('{', '(').replace('}', ')')
-    #     osoby_query = f"""SELECT * FROM "spedytorzy_osoby" WHERE "Osoba" IN {osoby}"""
-    #     osoby_df = pd.read_sql_query(osoby_query, con=engine)
-    #     print(osoby_df)
-    #     spedytor = self.spedytor
-    #     opiekun = self.opiekun
-    #     saldo_netto = self.saldo_netto
-    #     procent = int(1)
-    #     premia = saldo_netto * procent
-    #
-    #     if spedytor == opiekun:
-    #         pass
 
     def save(self, *args, **kwargs):
         engine = get_raport_baza_engine()
@@ -214,9 +193,6 @@ class ZleceniaRaport(Zlecenia):
     def __str__(self):
         return self.nr_zlecenia
 
-    # def __repr__(self):
-    #     return self.id
-
     class Meta:
         managed = True
         db_table = 'zlecenia_raport'
@@ -225,9 +201,7 @@ class ZleceniaRaport(Zlecenia):
 
 
 class ZleceniaHistoria(Zlecenia):
-    # id = models.AutoField(primary_key=True)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='ZAPISANY')
-    # raport_id = models.CharField(db_column='_id', blank=True, null=True, max_length=36,)
 
     def __str__(self):
         return self.id
@@ -255,11 +229,7 @@ class SpedytorzyOsoby(models.Model):
         verbose_name_plural = 'Osoby'
 
     def __str__(self):
-        # return str(self.id)
         return str(self.osoba)
-
-    # def __repr__(self):
-    #     return self.id
 
 
 class SpedytorzyPremie(models.Model):
@@ -275,26 +245,8 @@ class SpedytorzyPremie(models.Model):
         super().save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False, *args, **kwargs):
-        # engine = get_raport_baza_engine()
-        # zlec_id = self.zlecenie
-        # osoba_id = self.spedytor
         parallel_records = SpedytorzyPremie.objects.filter(zlecenie=self.zlecenie)
-        for record in parallel_records:
-            record.delete()
-        # print('DELETE', zlec_id)
-        # HttpResponse(f'delete/premie/{zlec_id}/')
-        #
-        # def my_latest_song(self, user_id):
-        #     song = SpedytorzyPremie.objects.filter(genre_id=self.id, author=User.objects.get(pk=user_id)).order_by('date')
-        #     return song[0]
-
-        # osoba_id = self.spedytor
-        # select_query = f"""
-        # SELECT * FROM "spedytorzy_premie"
-        # WHERE zlecenie_id = '{zlec_id}' AND spedytor_id != {osoba_id};"""
-        # print('HEJ', select_query)
-        # premie_df = pd.read_sql_query(select_query, con=engine)
-        # print('HOPSA', premie_df)
+        parallel_records.delete()
 
         super().delete(*args, **kwargs)
 
@@ -306,4 +258,3 @@ class SpedytorzyPremie(models.Model):
 
     def __str__(self):
         return str(self.zlecenie)
-            # , str(self.spedytor)
