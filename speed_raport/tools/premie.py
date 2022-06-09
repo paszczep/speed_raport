@@ -49,12 +49,8 @@ def create_premie():
     premie.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
 
 
-def create_premie():
-    existing_premie_query = """SELECT zlecenie_id FROM "spedytorzy_premie";"""
-    existing__premie_zlec_ids = pd.read_sql_query(existing_premie_query, con=engine)
-    existing_zlec_ids_list = existing__premie_zlec_ids['zlecenie_id'].to_list()
-
-    zlecenia_df = get_zlecenia(existing_zlec_ids_list)
+def update_premie(zlec, osoby, saldo):
+    print(zlec, osoby, saldo)
 
     osoby_query = 'SELECT * FROM "spedytorzy_osoby";'
     osoby_procenty = pd.read_sql_query(osoby_query, con=engine)

@@ -167,8 +167,7 @@ class Zlecenia(models.Model):
 
 class ZleceniaRaport(Zlecenia):
 
-    def save(self, *args, **kwargs):
-        engine = get_raport_baza_engine()
+    def archive_record(self, engine):
         raport_query = f"""SELECT * FROM "zlecenia_raport" WHERE "NR_ZLECENIA" = '{self.nr_zlecenia}'"""
         raport_df = pd.read_sql_query(raport_query, con=engine)
         archive_query = f"""SELECT * FROM "zlecenia_historia" WHERE "NR_ZLECENIA" = '{self.nr_zlecenia}'"""
@@ -188,6 +187,15 @@ class ZleceniaRaport(Zlecenia):
         if len(new_archive_df) > 0:
             new_archive_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
 
+        record_being_archived = self
+
+        return record_being_archived
+
+    def save(self, *args, **kwargs):
+        engine = get_raport_baza_engine()
+        archived_record = self.archive_record(engine)
+        osoby = [self.spedytor, self.opiekun]
+        saldo = self.saldo_netto
         super().save(*args, **kwargs)
 
     def __str__(self):
