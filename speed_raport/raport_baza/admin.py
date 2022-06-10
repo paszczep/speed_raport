@@ -15,6 +15,7 @@ class PremieAdmin(admin.ModelAdmin):
     search_fields = ('spedytor__osoba', 'zlecenie__nr_zlecenia')
     # raw_id_fields = ('zlecenie',)
     list_per_page = 10
+    change_list_template = 'premie_changelist.html'
 
 
 @admin.register(SpedytorzyOsoby)

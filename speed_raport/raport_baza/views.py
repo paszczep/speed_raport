@@ -9,21 +9,26 @@ from django import template
 # Create your views here.
 
 
-def upadate_osoby():
+def upadate_osoby(request):
     update_osoby()
     return HttpResponseRedirect('/admin/raport_baza/spedytorzyosoby/')
 
 
-def calculate_premie():
+def calculate_premie(request):
     create_premie()
-    return HttpResponseRedirect('/admin/raport_baza/zleceniaraport/')
+    return HttpResponseRedirect('/admin/raport_baza/spedytorzypremie/')
+
+
+# def calculate_premie_premie(request):
+#     create_premie()
+#     return HttpResponseRedirect('/admin/raport_baza/spedytorzypremie/')
 
 
 # def index_redundant(request):
 #     return render(request, "index.html")
 
 
-def index():
+def index(request):
     return redirect('/admin/')
 
 

@@ -2,23 +2,12 @@
 
 {% block object-tools %}
 
-<table>
-<thead>
-  <tr>
-    <td>
-        <form action="{% url 'select_date' %}">
-            <button type="submit">Dodaj wiersze</button>
-        </form>
-    </td>
-    <td>
-        <form action="{% url 'calculate_premie' %}">
-            <button type="submit">Policz premie</button>
-        </form>
-    </td>
-  </tr>
-</thead>
-</table>
+<div>
+    <form action="{% url 'select_date' %}">
+        <button type="submit">Dodaj wiersze</button>
+    </form>
+</div>
+</br>
 
-
-    {{ block.super }}
+{{ block.super }}
 {% endblock %}

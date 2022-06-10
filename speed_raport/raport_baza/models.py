@@ -9,6 +9,7 @@ from django.db import models, connection
 from django.http import HttpResponse
 import pandas as pd
 from tools.connect import get_raport_baza_engine
+from tools.premie import update_premie
 import uuid
 from datetime import datetime
 from django.shortcuts import render, redirect
@@ -193,9 +194,17 @@ class ZleceniaRaport(Zlecenia):
 
     def save(self, *args, **kwargs):
         engine = get_raport_baza_engine()
-        archived_record = self.archive_record(engine)
-        osoby = [self.spedytor, self.opiekun]
-        saldo = self.saldo_netto
+        # archived_record = self.archive_record(engine)
+        # osoby = [self.spedytor, self.opiekun]
+        # saldo = self.saldo_netto
+        # numer_zlecenia = self.nr_zlecenia
+        id_zlecenia = self.id
+        premie_objects = SpedytorzyPremie.objects.filter(zlecenie=id_zlecenia)
+        premie_objects.delete()
+        saldo_netto = str(self.saldo_netto)
+        print('saldo netto', saldo_netto)
+        zlec_dict = {'id': self.id, "SPEDYTOR": self.spedytor, "OPIEKUN": self.opiekun, "SALDO_NETTO": saldo_netto}
+        update_premie(zlec_dict)
         super().save(*args, **kwargs)
 
     def __str__(self):

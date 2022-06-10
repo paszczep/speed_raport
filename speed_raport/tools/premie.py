@@ -14,9 +14,48 @@ def get_zlecenia(existing_ids_list):
         WHERE id NOT IN {existing_ids_str}"""
 
     zlecenia_df = pd.read_sql_query(zlecenia_query, con=engine)
-    # print(zlecenia_df)
+    print('zlecenia dataframe', zlecenia_df)
     # [['id', 'SPEDYTOR', 'OPIEKUN', 'SALDO_NETTO']]
     return zlecenia_df
+
+
+def get_osoby_procenty(engine):
+    osoby_query = 'SELECT * FROM "spedytorzy_osoby";'
+    osoby_procenty = pd.read_sql_query(osoby_query, con=engine)
+    return osoby_procenty
+
+
+def zlecenia_to_premie(created, zlecenia, osoby_procenty):
+    print('kolumny zlecenia', zlecenia.columns)
+    premie = pd.DataFrame()
+    for index, zlecenie in zlecenia.iterrows():
+        zlec_id = zlecenie['id']
+        osoby_zlec = set([el for el in [zlecenie['SPEDYTOR'], zlecenie['OPIEKUN']] if el not in ['', None]])
+        for osoba_zlec in osoby_zlec:
+            osoba_osoba = osoby_procenty.loc[osoby_procenty['osoba'] == osoba_zlec]
+            osoba_id = int(osoba_osoba['id'])
+            procent = int(osoba_osoba['premia_procent']) / 100
+            print('SALDO_NETTO', zlecenie['SALDO_NETTO'])
+            premia = (float(zlecenie['SALDO_NETTO']) * procent) / len(osoby_zlec)
+            premia = f"{premia:.2f}"
+            row_dict = {'add_date': created, 'zlecenie_id': zlec_id, 'spedytor_id': osoba_id, 'kwota_premii': premia}
+            premie = premie.append(row_dict, ignore_index=True)
+    return premie
+
+
+def update_premie(new_zlec):
+
+    osoby_procenty = get_osoby_procenty(engine)
+
+    created = datetime.now()
+
+    zlecenie = pd.DataFrame(new_zlec, index=list(range(len(new_zlec))))
+
+    premie = zlecenia_to_premie(created, zlecenie, osoby_procenty)
+
+    schema_name = 'public'
+    table_name = 'spedytorzy_premie'
+    premie.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
 
 
 def create_premie():
@@ -26,49 +65,11 @@ def create_premie():
 
     zlecenia_df = get_zlecenia(existing_zlec_ids_list)
 
-    osoby_query = 'SELECT * FROM "spedytorzy_osoby";'
-    osoby_procenty = pd.read_sql_query(osoby_query, con=engine)
+    osoby_procenty = get_osoby_procenty(engine)
 
     created = datetime.now()
 
-    premie = pd.DataFrame()
-    for zlec in zlecenia_df.to_dict(orient="records"):
-        zlec_id = zlec['id']
-        osoby_zlec = set([el for el in [zlec['SPEDYTOR'], zlec['OPIEKUN']] if el not in ['', None]])
-        for osoba_zlec in osoby_zlec:
-            osoba_osoba = osoby_procenty.loc[osoby_procenty['osoba'] == osoba_zlec]
-            osoba_id = int(osoba_osoba['id'])
-            procent = int(osoba_osoba['premia_procent']) / 100
-            premia = (zlec['SALDO_NETTO'] * procent) / len(osoby_zlec)
-            premia = f"{premia:.2f}"
-            row_dict = {'add_date': created, 'zlecenie_id': zlec_id, 'spedytor_id': osoba_id, 'kwota_premii': premia}
-            premie = premie.append(row_dict, ignore_index=True)
-
-    schema_name = 'public'
-    table_name = 'spedytorzy_premie'
-    premie.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
-
-
-def update_premie(zlec, osoby, saldo):
-    print(zlec, osoby, saldo)
-
-    osoby_query = 'SELECT * FROM "spedytorzy_osoby";'
-    osoby_procenty = pd.read_sql_query(osoby_query, con=engine)
-
-    created = datetime.now()
-
-    premie = pd.DataFrame()
-    for zlec in zlecenia_df.to_dict(orient="records"):
-        zlec_id = zlec['id']
-        osoby_zlec = set([el for el in [zlec['SPEDYTOR'], zlec['OPIEKUN']] if el not in ['', None]])
-        for osoba_zlec in osoby_zlec:
-            osoba_osoba = osoby_procenty.loc[osoby_procenty['osoba'] == osoba_zlec]
-            osoba_id = int(osoba_osoba['id'])
-            procent = int(osoba_osoba['premia_procent']) / 100
-            premia = (zlec['SALDO_NETTO'] * procent) / len(osoby_zlec)
-            premia = f"{premia:.2f}"
-            row_dict = {'add_date': created, 'zlecenie_id': zlec_id, 'spedytor_id': osoba_id, 'kwota_premii': premia}
-            premie = premie.append(row_dict, ignore_index=True)
+    premie = zlecenia_to_premie(created=created, zlecenia=zlecenia_df, osoby_procenty=osoby_procenty)
 
     schema_name = 'public'
     table_name = 'spedytorzy_premie'
