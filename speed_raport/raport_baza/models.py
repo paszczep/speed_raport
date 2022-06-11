@@ -5,17 +5,11 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
-from django.db import models, connection
-from django.http import HttpResponse
+from django.db import models
 import pandas as pd
-from tools.connect import get_raport_baza_engine
 from tools.premie import update_premie
 import uuid
 from datetime import datetime
-from django.shortcuts import render, redirect
-
-# from datetime import datetime
-# from speed_raport.tools.insert import insert_into_database
 
 
 class AuthGroup(models.Model):
@@ -135,7 +129,6 @@ class DjangoSession(models.Model):
 class Zlecenia(models.Model):
     id = models.CharField(db_column='id', max_length=36, primary_key=True, default=0)
     field_timestamp = models.DateTimeField(db_column='_TIMESTAMP', blank=True, null=True, verbose_name='DODANY')
-    # field_timestamp = models.CharField(db_column='_TIMESTAMP', blank=True, null=True, max_length=19)
     nr_zlecenia = models.CharField(db_column='NR_ZLECENIA', blank=True, null=True, max_length=50)
     spedytor = models.CharField(db_column='SPEDYTOR', blank=True, null=True, max_length=50)
     opiekun = models.CharField(db_column='OPIEKUN', blank=True, null=True, max_length=50)
@@ -193,17 +186,10 @@ class ZleceniaRaport(Zlecenia):
         return record_being_archived
 
     def save(self, *args, **kwargs):
-        engine = get_raport_baza_engine()
-        # archived_record = self.archive_record(engine)
-        # osoby = [self.spedytor, self.opiekun]
-        # saldo = self.saldo_netto
-        # numer_zlecenia = self.nr_zlecenia
         id_zlecenia = self.id
         premie_objects = SpedytorzyPremie.objects.filter(zlecenie=id_zlecenia)
-        print(len(premie_objects))
         premie_objects.delete()
         saldo_netto = str(self.saldo_netto)
-        print('saldo netto', saldo_netto)
         zlec_dict = {'id': self.id, "SPEDYTOR": self.spedytor, "OPIEKUN": self.opiekun, "SALDO_NETTO": saldo_netto}
         update_premie(zlec_dict)
         super().save(*args, **kwargs)
@@ -251,7 +237,6 @@ class SpedytorzyOsoby(models.Model):
 
 
 class SpedytorzyPremie(models.Model):
-    # id = models.AutoField(primary_key=True)
     add_date = models.DateTimeField(auto_now_add=True, verbose_name='Data dodania')
     zlecenie = models.ForeignKey(ZleceniaRaport, on_delete=models.CASCADE, blank=True, null=True, db_column='zlecenie_id', verbose_name='Zlecenie')
     spedytor = models.ForeignKey(SpedytorzyOsoby, on_delete=models.CASCADE, blank=True, null=True, db_column='spedytor_id', verbose_name='Osoba')

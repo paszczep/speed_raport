@@ -7,7 +7,6 @@ engine = get_raport_baza_engine()
 
 def get_zlecenia(existing_ids_list):
     existing_ids_str = str(existing_ids_list).replace('[', '(').replace(']', ')')
-    # print('PATRZ', existing_ids_str)
     zlecenia_query = \
         f"""SELECT id, "SPEDYTOR", "OPIEKUN", "SALDO_NETTO"
         FROM "zlecenia_raport" 
@@ -29,7 +28,7 @@ def zlecenia_to_premie(created, zlecenia, osoby_procenty):
     premie = pd.DataFrame()
     for index, zlecenie in zlecenia.iterrows():
         zlec_id = zlecenie['id']
-        osoby_zlec = set([el for el in [zlecenie['SPEDYTOR'], zlecenie['OPIEKUN']] if el not in ['', None]])
+        osoby_zlec = [el for el in {zlecenie['SPEDYTOR'], zlecenie['OPIEKUN']} if el not in ['', None]]
         for osoba_zlec in osoby_zlec:
             osoba_osoba = osoby_procenty.loc[osoby_procenty['osoba'] == osoba_zlec]
             osoba_id = int(osoba_osoba['id'])
@@ -41,32 +40,11 @@ def zlecenia_to_premie(created, zlecenia, osoby_procenty):
     return premie
 
 
-def zlecenie_to_premie(created, zlecenie, osoby_procenty):
-    premie = pd.DataFrame()
-    print('ZLECENIE', '\n', zlecenie)
-    zlec_id = zlecenie['id']
-    osoby_zlec = {zlecenie['SPEDYTOR'], zlecenie['OPIEKUN']}
-    print('osoby_zlec', osoby_zlec)
-    osoby_zlec = set([el for el in osoby_zlec if el not in ['', None]])
-    for osoba_zlec in osoby_zlec:
-        osoba_osoba = osoby_procenty.loc[osoby_procenty['osoba'] == osoba_zlec]
-        osoba_id = int(osoba_osoba['id'])
-        procent = int(osoba_osoba['premia_procent']) / 100
-        premia = (float(zlecenie['SALDO_NETTO']) * procent) / len(osoby_zlec)
-        premia = f"{premia:.2f}"
-        row_dict = {'add_date': created, 'zlecenie_id': zlec_id, 'spedytor_id': osoba_id, 'kwota_premii': premia}
-        premie = premie.append(row_dict, ignore_index=True)
-    return premie
-
-
-def update_premie(new_zlec):
-    # print('NEW ZLEC', new_zlec)
+def update_premie(zlecenie_dict):
     osoby_procenty = get_osoby_procenty(engine)
-
     created = datetime.now()
 
-    zlecenie = pd.DataFrame(new_zlec, index=[0])
-    print(zlecenie)
+    zlecenie = pd.DataFrame(zlecenie_dict, index=[0])
     premie = zlecenia_to_premie(created, zlecenie, osoby_procenty)
 
     schema_name = 'public'
@@ -80,11 +58,8 @@ def create_premie():
     existing_zlec_ids_list = existing__premie_zlec_ids['zlecenie_id'].to_list()
 
     zlecenia_df = get_zlecenia(existing_zlec_ids_list)
-
     osoby_procenty = get_osoby_procenty(engine)
-
     created = datetime.now()
-
     premie = zlecenia_to_premie(created=created, zlecenia=zlecenia_df, osoby_procenty=osoby_procenty)
 
     schema_name = 'public'

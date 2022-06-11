@@ -19,11 +19,6 @@ def calculate_premie(request):
     return HttpResponseRedirect('/admin/raport_baza/spedytorzypremie/')
 
 
-# def calculate_premie_premie(request):
-#     create_premie()
-#     return HttpResponseRedirect('/admin/raport_baza/spedytorzypremie/')
-
-
 # def index_redundant(request):
 #     return render(request, "index.html")
 
