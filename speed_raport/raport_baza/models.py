@@ -200,6 +200,7 @@ class ZleceniaRaport(Zlecenia):
         # numer_zlecenia = self.nr_zlecenia
         id_zlecenia = self.id
         premie_objects = SpedytorzyPremie.objects.filter(zlecenie=id_zlecenia)
+        print(len(premie_objects))
         premie_objects.delete()
         saldo_netto = str(self.saldo_netto)
         print('saldo netto', saldo_netto)
