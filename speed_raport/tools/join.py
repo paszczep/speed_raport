@@ -21,13 +21,13 @@ def _calc(series):
 
 def get_raport_df(month, year):
     zlec_df = run_get_zlecenia_dataframe(month, year)
-    # print(zlec_df)
+
     zlec_df.fillna('', inplace=True)
     relevant_zlec_ids = str(set(zlec_df.ID_ZLECENIA.to_list()))
     relevant_zlec_ids = relevant_zlec_ids.replace('{', '(').replace('}', ')')
     faktury_df = get_faktury_by_zlecenia_id(relevant_zlec_ids)
     pozycje_df = get_pozycje_by_zlecenia_id(relevant_zlec_ids)
-    # print(faktury_df.columns)
+
     pozycje_df['INDEX_POZYCJE'] = _index(pozycje_df['FAKTURY_ID']) + _index(pozycje_df['ZLECENIE_ID'])
     pozycje_df.drop(['FAKTURY_ID', 'ZLECENIE_ID'], axis=1, inplace=True)
     faktury_cols = ['ID_FAKTURY', 'NUMER_FAKTURY', 'ZLECENIE_ID', 'DATA_WYSTAWIENIA', 'DATA_PLATNOSCI']
@@ -102,11 +102,10 @@ def get_raport_df(month, year):
 
     zlec_df[['ZA_DATA']].update(zlec_df[['ZA_DATA_RZ']])
     zlec_df[['WY_DATA']].update(zlec_df[['WY_DATA_RZ']])
-    # zlec_df['_TIMESTAMP'] = datetime.now(pytz.timezone('Europe/Warsaw'))
     zlec_df['_TIMESTAMP'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     zlec_df['INFORMACJE'] = ''
     zlec_df['id'] = zlec_df.apply(lambda _: uuid.uuid4(), axis=1)
-    # print(zlec_df.columns)
+
     relevant_zlec_cols = [
         'id',
         '_TIMESTAMP', 'NR_ZLECENIA',
@@ -121,17 +120,10 @@ def get_raport_df(month, year):
 
     data_cols = [col for col in relevant_zlec_cols if 'DATA' in col]
     for col in data_cols:
-        # print(zlec_df[col])
         zlec_df[col] = pd.to_datetime(zlec_df[col]).dt.date
         zlec_df[col].fillna('', inplace=True)
-        # print(zlec_df[col])
+
     # zlec_df.to_excel('output.xlsx', columns=relevant_zlec_cols)
     # zlec_df.to_csv('output.csv', encoding='UTF-8', columns=relevant_zlec_cols)
-    # zlec_df.fillna('', inplace=True)
-    return zlec_df[relevant_zlec_cols]
 
-# if __name__ == '__main__':
-#
-#     raport_dataframe = get_raport_df()
-#
-#     print(raport_dataframe[['ZA_DATA', 'WY_DATA']])
+    return zlec_df[relevant_zlec_cols]

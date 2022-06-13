@@ -8,6 +8,7 @@
 from django.db import models
 import pandas as pd
 from tools.premie import update_premie
+from tools.connect import get_raport_baza_engine
 import uuid
 from datetime import datetime
 
@@ -161,11 +162,15 @@ class Zlecenia(models.Model):
 
 class ZleceniaRaport(Zlecenia):
 
-    def archive_record(self, engine):
-        raport_query = f"""SELECT * FROM "zlecenia_raport" WHERE "NR_ZLECENIA" = '{self.nr_zlecenia}'"""
-        raport_df = pd.read_sql_query(raport_query, con=engine)
-        archive_query = f"""SELECT * FROM "zlecenia_historia" WHERE "NR_ZLECENIA" = '{self.nr_zlecenia}'"""
-        archive_df = pd.read_sql_query(archive_query, con=engine)
+    def zlecenia_from_table(self, table, engine):
+        zlecenia_query = f"""SELECT * FROM "{table}" WHERE "NR_ZLECENIA" = '{self.nr_zlecenia}'"""
+        zlecenia_df = pd.read_sql_query(zlecenia_query, con=engine)
+        return zlecenia_df
+
+    def archive_record(self):
+        engine = get_raport_baza_engine()
+        raport_df = self.zlecenia_from_table(table="zlecenia_raport", engine=engine)
+        archive_df = self.zlecenia_from_table(table="zlecenia_historia", engine=engine)
         new_archive_df = pd.concat([raport_df, archive_df])
         # Patrzę czy nie ma duplikatu zapisywanego rekordu w archiwum
         duplicates_cols = [el for el in new_archive_df.columns if el not in ['_TIMESTAMP', 'id', 'created']]
@@ -181,11 +186,10 @@ class ZleceniaRaport(Zlecenia):
         if len(new_archive_df) > 0:
             new_archive_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
 
-        record_being_archived = self
-
-        return record_being_archived
+        # return self
 
     def save(self, *args, **kwargs):
+        self.archive_record()
         id_zlecenia = self.id
         premie_objects = SpedytorzyPremie.objects.filter(zlecenie=id_zlecenia)
         premie_objects.delete()
@@ -250,7 +254,6 @@ class SpedytorzyPremie(models.Model):
     def delete(self, using=None, keep_parents=False, *args, **kwargs):
         parallel_records = SpedytorzyPremie.objects.filter(zlecenie=self.zlecenie)
         parallel_records.delete()
-
         super().delete(*args, **kwargs)
 
     class Meta:

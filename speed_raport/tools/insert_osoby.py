@@ -15,21 +15,9 @@ def dataframe_from_query(given_cursor, given_query):
 
 def get_output_engine():
     engine_str = f"postgresql://{OUT_DB['user']}:{OUT_DB['password']}@{OUT_DB['host']}:{OUT_DB['port']}/{OUT_DB['database']}"
-    engine = create_engine(engine_str,
-                           encoding='ISO-8859-2',
-                           # encoding='UTF-8'
-                          )
+    engine = create_engine(engine_str, encoding='ISO-8859-2')
     return engine
 
-
-# conn_speed = pymssql.connect(
-#     server='10.100.200.3',
-#     port='1433',
-#     user='pawel',
-#     password='20Al3Mot@VP@weL22#',
-#     database='SPEED',
-#     charset='CP1250')
-# cursor_speed = conn_speed.cursor()
 
 def update_osoby():
     spedytorzy_query = """
@@ -47,13 +35,6 @@ def update_osoby():
     spedytorzy_list = [sped for sped in spedytorzy.unique() if sped not in existing_list + [None, '', '-']]
     unique_sped_df = pd.DataFrame(data=spedytorzy_list, columns=['osoba'])
     unique_sped_df['premia_procent'] = 10
-    OUT_DB = {
-        'host': '10.100.200.3',
-        'port': '5432',
-        'database': "postgres",
-        'user': "postgres",
-        # 'password': "DbMot!v@SerWBaza22#",
-        'password': "S4FVVyqlkPexcBryOx7Q5hVMuDY70eQl"}
 
     schema_name = 'public'
     table_name = 'spedytorzy_osoby'
