@@ -168,9 +168,11 @@ class ZleceniaRaport(Zlecenia):
         return zlecenia_df
 
     def archive_record(self):
+        archive_table = ZleceniaHistoria.Meta.db_table
+        raport_table = ZleceniaRaport.Meta.db_table
         engine = get_raport_baza_engine()
-        raport_df = self.zlecenia_from_table(table="zlecenia_raport", engine=engine)
-        archive_df = self.zlecenia_from_table(table="zlecenia_historia", engine=engine)
+        raport_df = self.zlecenia_from_table(table=raport_table, engine=engine)
+        archive_df = self.zlecenia_from_table(table=archive_table, engine=engine)
         new_archive_df = pd.concat([raport_df, archive_df])
         # Patrzę czy nie ma duplikatu zapisywanego rekordu w archiwum
         duplicates_cols = [el for el in new_archive_df.columns if el not in ['_TIMESTAMP', 'id', 'created']]
@@ -182,9 +184,9 @@ class ZleceniaRaport(Zlecenia):
         new_archive_df['id'] = new_archive_df.apply(lambda _: uuid.uuid4(), axis=1)
 
         schema_name = 'public'
-        table_name = 'zlecenia_historia'
+        # table_name = 'zlecenia_historia'
         if len(new_archive_df) > 0:
-            new_archive_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
+            new_archive_df.to_sql(name=archive_table, con=engine, schema=schema_name, if_exists='append', index=False)
 
         # return self
 

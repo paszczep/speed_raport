@@ -1,31 +1,13 @@
-import pymssql
 import pandas as pd
-from sqlalchemy import create_engine
-from tools.connect import get_input_cursor, OUT_DB, get_raport_baza_engine
+from tools.connect import get_input_cursor, OUT_DB, get_raport_baza_engine, dataframe_from_query, SCHEMA_NAME
 
 
-def dataframe_from_query(given_cursor, given_query):
-    given_cursor.execute(given_query)
-    return_data = given_cursor.fetchall()
-    dfr_columns = [item[0] for item in given_cursor.description]
-    return_dataframe = pd.DataFrame(data=return_data, columns=dfr_columns)
-
-    return return_dataframe
-
-
-def get_output_engine():
-    engine_str = f"postgresql://{OUT_DB['user']}:{OUT_DB['password']}@{OUT_DB['host']}:{OUT_DB['port']}/{OUT_DB['database']}"
-    engine = create_engine(engine_str, encoding='ISO-8859-2')
-    return engine
-
-
-def update_osoby():
+def update_osoby(table_name):
     spedytorzy_query = """
        SELECT [SPEDYTOR], [OPIEKUN] FROM [SPEED].[dbo].[ZLECENIA]
     """
 
     cursor_speed = get_input_cursor()
-
     spedytorzy_df = dataframe_from_query(cursor_speed, spedytorzy_query)
     spedytorzy = spedytorzy_df.SPEDYTOR.append(spedytorzy_df.OPIEKUN)
 
@@ -36,7 +18,6 @@ def update_osoby():
     unique_sped_df = pd.DataFrame(data=spedytorzy_list, columns=['osoba'])
     unique_sped_df['premia_procent'] = 10
 
-    schema_name = 'public'
+    schema_name = SCHEMA_NAME
     table_name = 'spedytorzy_osoby'
-    engine = get_raport_baza_engine()
     unique_sped_df.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
