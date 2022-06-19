@@ -1,4 +1,4 @@
-from tools.connect import get_raport_baza_engine
+from tools.connect import get_raport_baza_engine, SCHEMA_NAME
 import pandas as pd
 from datetime import datetime
 
@@ -47,7 +47,7 @@ def update_premie(zlecenie_dict):
     zlecenie = pd.DataFrame(zlecenie_dict, index=[0])
     premie = zlecenia_to_premie(created, zlecenie, osoby_procenty)
 
-    schema_name = 'public'
+    schema_name = SCHEMA_NAME
     table_name = 'spedytorzy_premie'
     premie.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
 
@@ -62,6 +62,6 @@ def create_premie():
     created = datetime.now()
     premie = zlecenia_to_premie(created=created, zlecenia=zlecenia_df, osoby_procenty=osoby_procenty)
 
-    schema_name = 'public'
+    schema_name = SCHEMA_NAME
     table_name = 'spedytorzy_premie'
     premie.to_sql(name=table_name, con=engine, schema=schema_name, if_exists='append', index=False)
