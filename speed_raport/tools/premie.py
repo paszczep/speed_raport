@@ -13,7 +13,7 @@ def get_zlecenia(existing_ids_list):
         WHERE id NOT IN {existing_ids_str}"""
 
     zlecenia_df = pd.read_sql_query(zlecenia_query, con=engine)
-    print('zlecenia dataframe', zlecenia_df)
+    # print('zlecenia dataframe', zlecenia_df)
     # [['id', 'SPEDYTOR', 'OPIEKUN', 'SALDO_NETTO']]
     return zlecenia_df
 

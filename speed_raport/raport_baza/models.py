@@ -168,8 +168,8 @@ class ZleceniaRaport(Zlecenia):
         return zlecenia_df
 
     def archive_record(self):
-        archive_table = ZleceniaHistoria.Meta.db_table
-        raport_table = ZleceniaRaport.Meta.db_table
+        archive_table = ZleceniaHistoria.objects.model._meta.db_table
+        raport_table = ZleceniaRaport.objects.model._meta.db_table
         engine = get_raport_baza_engine()
         raport_df = self.zlecenia_from_table(table=raport_table, engine=engine)
         archive_df = self.zlecenia_from_table(table=archive_table, engine=engine)
