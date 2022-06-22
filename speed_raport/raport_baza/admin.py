@@ -32,7 +32,6 @@ class ZleceniaAdmin(admin.ModelAdmin):
     list_filter = ('field_timestamp', 'spedytor', 'opiekun', 'opis', 'za_data')
     ordering = ('field_timestamp', 'nr_zlecenia',)
     search_fields = (
-
         'nr_zlecenia', 'spedytor', 'opiekun', )
     list_per_page = 5
 

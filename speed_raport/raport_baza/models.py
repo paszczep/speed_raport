@@ -156,6 +156,8 @@ class Zlecenia(models.Model):
     noty_netto_pln = models.DecimalField(db_column='NOTY_NETTO_PLN', max_digits=8, decimal_places=2, blank=True, null=True)
     saldo_netto = models.DecimalField(db_column='SALDO_NETTO', max_digits=8, decimal_places=2, blank=True, null=True)
 
+    objects = models.Manager()
+
     class Meta:
         abstract = True
 
