@@ -2,7 +2,7 @@ import pandas as pd
 from tools.connect import get_input_cursor, OUT_DB, get_raport_baza_engine, dataframe_from_query, SCHEMA_NAME
 
 
-def update_osoby(table_name):
+def update_osoby():
     spedytorzy_query = """
        SELECT [SPEDYTOR], [OPIEKUN] FROM [SPEED].[dbo].[ZLECENIA]
     """

@@ -6,7 +6,10 @@ engine = get_raport_baza_engine()
 
 
 def get_zlecenia(existing_ids_list):
-    existing_ids_str = str(existing_ids_list).replace('[', '(').replace(']', ')')
+    if len(existing_ids_list) != 0:
+        existing_ids_str = str(existing_ids_list).replace('[', '(').replace(']', ')')
+    else:
+        existing_ids_str = "('')"
     zlecenia_query = \
         f"""SELECT id, "SPEDYTOR", "OPIEKUN", "SALDO_NETTO"
         FROM "zlecenia_raport" 
