@@ -38,6 +38,7 @@ class ZleceniaAdmin(admin.ModelAdmin):
 
 class ZleceniaRaportAdmin(ZleceniaAdmin):
     readonly_fields = (
+        'id',
         'field_timestamp',
         'nr_zlecenia'
     )
@@ -46,9 +47,9 @@ class ZleceniaRaportAdmin(ZleceniaAdmin):
 
 
 class ZleceniaHistoriaAdmin(ZleceniaAdmin):
-
-    readonly_fields = ['field_timestamp', 'nr_zlecenia', 'spedytor', 'opiekun', 'za_miejsce', 'za_data', 'wy_data', 'wy_miejsce', 'wy_miasto', 'wy_kraj', 'wy_kod', 'za_miasto', 'za_kraj', 'za_kod', 'trasa', 'opis', 'informacje', 'data_wystawienia_koszt', 'data_platnosci_koszt', 'data_wystawienia_przych', 'data_platnosci_przych', 'netto_pln_przych', 'netto_pln_koszt', 'noty_netto_pln', 'saldo_netto']
-    list_display = ['created'] + readonly_fields
+    _fields = ['field_timestamp', 'nr_zlecenia', 'spedytor', 'opiekun', 'za_miejsce', 'za_data', 'wy_data', 'wy_miejsce', 'wy_miasto', 'wy_kraj', 'wy_kod', 'za_miasto', 'za_kraj', 'za_kod', 'trasa', 'opis', 'informacje', 'data_wystawienia_koszt', 'data_platnosci_koszt', 'data_wystawienia_przych', 'data_platnosci_przych', 'netto_pln_przych', 'netto_pln_koszt', 'noty_netto_pln', 'saldo_netto']
+    readonly_fields = _fields + ['id']
+    list_display = ['created'] + _fields
 
     class Meta:
         verbose_name = 'Zlecenie historia'
