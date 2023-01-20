@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 SCHEMA_NAME = 'public'
 
 OUT_DB = {
-    'host': '10.100.200.3',
+    'host': '',
     'port': '5432',
     'database': "postgres",
     'user': "postgres",
@@ -25,10 +25,10 @@ def dataframe_from_query(given_cursor, given_query):
 
 def get_input_cursor():
     conn = pymssql.connect(
-        server='10.100.200.3',
+        server='',
         port='1433',
-        user='pawel',
-        password='20Al3Mot@VP@weL22#',
+        user='',
+        password='',
         database='SPEED',
         charset='CP1250'
     )

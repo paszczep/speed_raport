@@ -9,14 +9,11 @@ DATETIME_FORMAT = '%Y-%m-%d_%H%M'
 
 
 def _index(series):
-    series = pd.to_numeric(series, errors='coerce').astype('Int64').astype(str).str.replace('<NA>', '')
-    return series
+    return pd.to_numeric(series, errors='coerce').astype('Int64').astype(str).str.replace('<NA>', '')
 
 
 def _calc(series):
-    series.fillna(0, inplace=True)
-    series = pd.to_numeric(series)
-    return series
+    return pd.to_numeric(series.fillna(0, inplace=True))
 
 
 def get_raport_df(month, year):
@@ -29,12 +26,12 @@ def get_raport_df(month, year):
     pozycje_df = get_pozycje_by_zlecenia_id(relevant_zlec_ids)
 
     pozycje_df['INDEX_POZYCJE'] = _index(pozycje_df['FAKTURY_ID']) + _index(pozycje_df['ZLECENIE_ID'])
-    pozycje_df.drop(['FAKTURY_ID', 'ZLECENIE_ID'], axis=1, inplace=True)
+    pozycje_df = pozycje_df.drop(['FAKTURY_ID', 'ZLECENIE_ID'], axis=1)
     faktury_cols = ['ID_FAKTURY', 'NUMER_FAKTURY', 'ZLECENIE_ID', 'DATA_WYSTAWIENIA', 'DATA_PLATNOSCI']
 
     koszt_ids = faktury_df.loc[faktury_df.NUMER_FAKTURY.isin(set(zlec_df.FAKTURA_K.to_list()))][faktury_cols]
     koszt_ids['INDEX'] = koszt_ids['NUMER_FAKTURY'] + _index(koszt_ids['ZLECENIE_ID'])
-    koszt_ids.drop(['NUMER_FAKTURY', 'ZLECENIE_ID'], axis=1, inplace=True)
+    koszt_ids = koszt_ids.drop(['NUMER_FAKTURY', 'ZLECENIE_ID'], axis=1)
     koszt_ids.columns = koszt_ids.columns.values + '_KOSZT'
 
     zlec_df['INDEX_KOSZT'] = zlec_df['FAKTURA_K'] + _index(zlec_df['ID_ZLECENIA'])
