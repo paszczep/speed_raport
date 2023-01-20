@@ -10,7 +10,7 @@ OUT_DB = {
     'port': '5432',
     'database': "postgres",
     'user': "postgres",
-    'password': "S4FVVyqlkPexcBryOx7Q5hVMuDY70eQl"
+    'password': ""
 }
 
 
